@@ -386,6 +386,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
+  align-content: start;
   flex-grow: 1;
   height: 0;
   min-height: 0;
