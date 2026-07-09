@@ -1,0 +1,158 @@
+<div class="collection-container animate-fade-slide">
+  <!-- Main Three-Column Split Screen -->
+  <div class="library-split-pane">
+    <!-- 1. Artists Column -->
+    <div class="library-col artists-col" [class.dropdown-active]="showArtistSortDropdown()">
+      <div class="col-controls">
+        <span class="col-title text-light">artists</span>
+        <div class="control-row">
+          <input type="text" 
+                 [ngModel]="artistSearch()" 
+                 (ngModelChange)="artistSearch.set($event)"
+                 placeholder="Search artists..." 
+                 class="col-search-input" />
+          <div class="custom-dropdown">
+            <button class="dropdown-trigger" (click)="toggleArtistSort($event)">
+              {{ getArtistSortLabel() }} ▾
+            </button>
+            <div class="dropdown-popup" *ngIf="showArtistSortDropdown()">
+              <button class="dropdown-option" (click)="setArtistSort('az', $event)">A-Z</button>
+              <button class="dropdown-option" (click)="setArtistSort('za', $event)">Z-A</button>
+              <button class="dropdown-option" (click)="setArtistSort('tracks', $event)">Tracks</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-list artists-list">
+        <button class="list-item artist-item" 
+                [class.selected]="selectedArtist() === null" 
+                (click)="selectArtist(null)">
+          all artists
+        </button>
+        <button class="list-item artist-item" 
+                *ngFor="let artist of filteredArtists()" 
+                [class.selected]="selectedArtist() === artist" 
+                (click)="selectArtist(artist)">
+          {{ artist }}
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Albums Column -->
+    <div class="library-col albums-col" [class.dropdown-active]="showAlbumSortDropdown()">
+      <div class="col-controls">
+        <span class="col-title text-light">albums</span>
+        <div class="control-row">
+          <input type="text" 
+                 [ngModel]="albumSearch()" 
+                 (ngModelChange)="albumSearch.set($event)"
+                 placeholder="Search albums..." 
+                 class="col-search-input" />
+          <div class="custom-dropdown">
+            <button class="dropdown-trigger" (click)="toggleAlbumSort($event)">
+              {{ getAlbumSortLabel() }} ▾
+            </button>
+            <div class="dropdown-popup" *ngIf="showAlbumSortDropdown()">
+              <button class="dropdown-option" (click)="setAlbumSort('az', $event)">A-Z</button>
+              <button class="dropdown-option" (click)="setAlbumSort('za', $event)">Z-A</button>
+              <button class="dropdown-option" (click)="setAlbumSort('year', $event)">Year</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-grid albums-grid" *ngIf="filteredAlbums().length > 0; else noAlbums">
+        <!-- All Albums card option -->
+        <div class="album-card" 
+             [class.selected]="selectedAlbum() === null" 
+             (click)="selectAlbum(null)">
+          <div class="album-art-wrapper all-albums">
+            <svg viewBox="0 0 24 24" class="all-albums-svg">
+              <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/>
+            </svg>
+          </div>
+          <div class="album-meta">
+            <span class="album-title">all albums</span>
+            <span class="album-artist">all tracks</span>
+          </div>
+        </div>
+
+        <!-- Individual Album Cards -->
+        <div class="album-card" 
+             *ngFor="let album of filteredAlbums()" 
+             [class.selected]="selectedAlbum() === album.name" 
+             (click)="selectAlbum(album.name)">
+          <div class="album-art-wrapper">
+            <app-album-art [artKey]="album.artKey"></app-album-art>
+          </div>
+          <div class="album-meta">
+            <span class="album-title">{{ album.name }}</span>
+            <span class="album-artist">{{ album.artist }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noAlbums>
+        <div class="col-empty">No albums found</div>
+      </ng-template>
+    </div>
+
+    <!-- 3. Songs Column -->
+    <div class="library-col songs-col" [class.dropdown-active]="showSongSortDropdown()">
+      <div class="col-controls">
+        <span class="col-title text-light">songs</span>
+        <div class="control-row">
+          <input type="text" 
+                 [ngModel]="songSearch()" 
+                 (ngModelChange)="songSearch.set($event)"
+                 placeholder="Search songs..." 
+                 class="col-search-input" />
+          <div class="custom-dropdown">
+            <button class="dropdown-trigger" (click)="toggleSongSort($event)">
+              {{ getSongSortLabel() }} ▾
+            </button>
+            <div class="dropdown-popup" *ngIf="showSongSortDropdown()">
+              <button class="dropdown-option" (click)="setSongSort('trackno', $event)">Track No</button>
+              <button class="dropdown-option" (click)="setSongSort('az', $event)">A-Z</button>
+              <button class="dropdown-option" (click)="setSongSort('za', $event)">Z-A</button>
+              <button class="dropdown-option" (click)="setSongSort('duration', $event)">Length</button>
+              <button class="dropdown-option" (click)="setSongSort('plays', $event)">Plays</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-list songs-list" *ngIf="filteredSongs().length > 0; else noSongs">
+        <div class="song-item" 
+             *ngFor="let track of filteredSongs()" 
+             [class.playing]="audioService.currentTrack()?.id === track.id"
+             (dblclick)="playTrack(track)">
+          <div class="song-drag-handle" (click)="playTrack(track)">▶</div>
+          <div class="song-details">
+            <span class="song-name">{{ track.title }}</span>
+            <span class="song-sub-details">
+              {{ track.artist }} • {{ track.album }}
+            </span>
+          </div>
+          <div class="song-actions">
+            <div class="playlist-add-container">
+              <button class="add-to-pl-btn" (click)="openAddPlaylistModal($event, track)" title="Add to Playlist">+</button>
+            </div>
+            
+            <button class="heart-btn" 
+                    [class.heart-active]="track.heart === 1" 
+                    (click)="toggleHeart(track, $event)">
+              <svg viewBox="0 0 24 24" class="heart-icon-svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+              </svg>
+            </button>
+            <span class="song-duration">{{ formatDuration(track.duration) }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noSongs>
+        <div class="col-empty">No tracks found</div>
+      </ng-template>
+    </div>
+  </div>
+</div>

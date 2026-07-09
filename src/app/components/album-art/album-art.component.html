@@ -1,0 +1,8 @@
+<div class="art-container" [class.no-art]="!artUrl()">
+  <img *ngIf="artUrl()" [src]="artUrl()" alt="Album Art" (error)="onImgError()" />
+  <div *ngIf="!artUrl()" class="placeholder-art">
+    <svg viewBox="0 0 24 24" class="placeholder-svg">
+      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h6V3h-8z"/>
+    </svg>
+  </div>
+</div>

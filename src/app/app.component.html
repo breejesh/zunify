@@ -1,0 +1,312 @@
+<div class="zunify-app" [class.light-theme]="settingsService.theme() === 'light' || (settingsService.theme() === 'original' && (activeView() === 'collection' || activeView() === 'settings'))">
+  <!-- Top Bar -->
+  <header class="app-header" *ngIf="activeView() !== 'nowplaying'">
+    <div class="header-left">
+      <!-- Brand Logo Circle -->
+      <div class="brand-logo-circle" (click)="goBack()" title="Zunify Home">
+        <span class="brand-letter">Z</span>
+      </div>
+
+      <!-- Pivot Navigation -->
+      <nav class="pivot-nav">
+        <button class="nav-item" [class.active]="activeView() === 'quickplay'"
+          (click)="changeView('quickplay')">home</button>
+        <button class="nav-item" [class.active]="activeView() === 'collection'"
+          (click)="changeView('collection')">collection</button>
+        <button class="nav-item" [class.active]="activeView() === 'settings'"
+          (click)="changeView('settings')">settings</button>
+      </nav>
+    </div>
+
+    <!-- PWA Install Button & User Label -->
+    <div class="header-right">
+      <!-- Install App Button (Visible only on web / installable) -->
+      <button class="install-app-btn" *ngIf="isInstallable && !isStandalone" (click)="installPWA()">
+        INSTALL DESKTOP APP
+      </button>
+
+      <div class="user-profile-simple">
+        <span class="user-avatar-dot">●</span>
+        <span class="user-name-text">ZUNIFY</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Viewport Area -->
+  <main class="app-viewport" [class.fullscreen]="activeView() === 'nowplaying'">
+    <app-quickplay *ngIf="activeView() === 'quickplay'"></app-quickplay>
+    <app-collection *ngIf="activeView() === 'collection'"></app-collection>
+    <app-settings *ngIf="activeView() === 'settings'"></app-settings>
+    <app-now-playing *ngIf="activeView() === 'nowplaying'"></app-now-playing>
+  </main>
+
+  <!-- Bottom Player Bar -->
+  <footer class="app-player-bar" *ngIf="activeView() !== 'nowplaying'">
+    <!-- Left Area: Volume control shifted here (always visible) -->
+    <div class="player-left">
+      <div class="volume-control">
+        <input type="range" [value]="currentVolume()" (input)="onVolumeChange($event)"
+          [style.--volume-percent.%]="currentVolume()" [class.muted]="audioService.isMuted()" min="0" max="100"
+          class="volume-slider" />
+        <span class="volume-label" (click)="audioService.toggleMute()">
+          {{ audioService.isMuted() ? 'MUTE' : 'VOLUME ' + (audioService.volume() | number:'1.0-0') }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Center: Playing track details and inline progress (always visible) -->
+    <div class="player-center">
+      <div class="player-now-playing">
+        <!-- Album Art on the left -->
+        <div class="player-album-info" (click)="currentTrack() && changeView('nowplaying')">
+          <div class="player-art">
+            <app-album-art [artKey]="currentTrack()?.albumArtKey"></app-album-art>
+          </div>
+        </div>
+
+        <!-- Progress Area stacked with name on top, elapsed/remaining below -->
+        <div class="player-progress-area">
+          <div class="progress-top-row">
+            <span class="track-name" (click)="currentTrack() && changeView('nowplaying')">
+              {{ currentTrack() ? currentTrack()!.title : 'no song playing' }}
+            </span>
+
+            <!-- Favorite heart toggle icon on top right of the progress bar -->
+            <button class="player-fav-btn" [class.active]="currentTrack()?.heart === 1" [disabled]="!currentTrack()"
+              (click)="currentTrack() && toggleCurrentTrackHeart(currentTrack(), $event)" title="Favorite">
+              <svg viewBox="0 0 24 24" class="fav-svg">
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="player-progress-bar" (click)="currentTrack() && onTimelineClick($event)">
+            <div class="player-progress-filled" [style.width.%]="currentTrack() ? progressPercent() : 0"></div>
+          </div>
+
+          <div class="progress-bottom-row">
+            <span class="progress-time">{{ formatTime(currentTrack() ? audioService.currentTime() : 0) }}</span>
+            <span class="progress-time">-{{ formatTime(currentTrack() ? remainingTime() : 0) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Mini Controls -->
+    <div class="player-right">
+      <div class="control-buttons">
+        <!-- Repeat button -->
+        <button class="ctrl-btn repeat-btn" [class.active]="audioService.repeat() !== 'off'" (click)="toggleRepeat()"
+          title="Repeat Mode">
+          <svg viewBox="0 0 24 24" class="svg-icon svg-stroke-only repeat">
+            <path d="M21.5 2v6h-6" />
+            <path d="M21.34 15.57a10 10 0 1 1-.57-8.38" />
+          </svg>
+          <span class="repeat-one-digit" *ngIf="audioService.repeat() === 'one'">1</span>
+        </button>
+
+        <!-- Previous button with circle -->
+        <button class="ctrl-btn prev-btn" (click)="prev()" title="Previous Track">
+          <svg viewBox="0 0 24 24" class="svg-icon">
+            <polygon points="19,5 12,12 19,19" />
+            <polygon points="12,5 5,12 12,19" />
+            <line x1="4" y1="5" x2="4" y2="19" class="svg-stroke" />
+          </svg>
+        </button>
+
+        <!-- Play/Pause circle button -->
+        <button class="ctrl-btn play-circle" (click)="togglePlay()" title="Play / Pause">
+          <svg viewBox="0 0 24 24" class="svg-icon" *ngIf="isPlaying()">
+            <rect x="6" y="4" width="4" height="16" />
+            <rect x="14" y="4" width="4" height="16" />
+          </svg>
+          <svg viewBox="0 0 24 24" class="svg-icon play-triangle" *ngIf="!isPlaying()">
+            <polygon points="8,5 19,12 8,19" />
+          </svg>
+        </button>
+
+        <!-- Next button with circle -->
+        <button class="ctrl-btn next-btn" (click)="next()" title="Next Track">
+          <svg viewBox="0 0 24 24" class="svg-icon">
+            <polygon points="5,5 12,12 5,19" />
+            <polygon points="12,5 19,12 12,19" />
+            <line x1="20" y1="5" x2="20" y2="19" class="svg-stroke" />
+          </svg>
+        </button>
+
+        <!-- Shuffle button -->
+        <button class="ctrl-btn shuffle-btn" [class.active]="audioService.shuffle()" (click)="toggleShuffle()"
+          title="Shuffle Queue">
+          <svg viewBox="0 0 24 24" class="svg-icon svg-stroke-only">
+            <path d="M4,17 C8,17 12,7 16,7 L20,7" />
+            <path d="M4,7 C8,7 12,17 16,17 L20,17" />
+            <polyline points="17,4 20,7 17,10" />
+            <polyline points="17,14 20,17 17,20" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Equalizer Visualizer Bars icon -->
+      <div class="eq-icon-wrapper">
+        <div class="eq-bars" [class.playing]="isPlaying()">
+          <span class="eq-b b1"></span>
+          <span class="eq-b b2"></span>
+          <span class="eq-b b3"></span>
+          <span class="eq-b b4"></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Global Modal Overlay — rendered at root level, outside any transform stacking context -->
+  <div class="global-modal-backdrop" *ngIf="modalService.activeModal()" (click)="modalService.cancel()">
+    <div class="global-modal-popup" (click)="$event.stopPropagation()">
+      <h4 class="global-modal-title">{{ modalService.activeModal()?.title }}</h4>
+      <p class="global-modal-desc" *ngIf="modalService.activeModal()?.description">
+        {{ modalService.activeModal()?.description }}
+      </p>
+      <div class="global-modal-actions">
+        <button class="global-modal-btn cancel-btn" (click)="modalService.cancel()">
+          {{ modalService.activeModal()?.cancelLabel || 'cancel' }}
+        </button>
+        <button class="global-modal-btn confirm-btn" (click)="modalService.confirm()">
+          {{ modalService.activeModal()?.confirmLabel || 'confirm' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add to Playlist Modal — root level, guaranteed above header/footer -->
+  <div class="global-modal-backdrop" *ngIf="playlistModal.activeTrack()" (click)="playlistModal.close()">
+    <div class="playlist-modal-popup" (click)="$event.stopPropagation()">
+      <h4 class="playlist-modal-title">add to playlist</h4>
+      <p class="playlist-modal-desc">
+        select playlists for "{{ playlistModal.activeTrack()?.title }}"
+      </p>
+
+      <div class="playlist-modal-list">
+        <label class="playlist-check-item" *ngFor="let pl of playlistModal.libraryService.playlists()">
+          <input type="checkbox" [checked]="playlistModal.selectedPlaylistIds().includes(pl.id!)"
+            (change)="playlistModal.togglePlaylistSelection(pl.id!)" />
+          <span class="playlist-check-name">{{ pl.name }}</span>
+          <span class="playlist-check-count">({{ pl.trackPaths.length }})</span>
+        </label>
+        <div class="playlist-empty" *ngIf="playlistModal.libraryService.playlists().length === 0">
+          no playlists yet.
+        </div>
+      </div>
+
+      <div class="playlist-create-row">
+        <input type="text" class="playlist-create-input" [ngModel]="playlistModal.newPlaylistName()"
+          (ngModelChange)="playlistModal.newPlaylistName.set($event)" (keydown.enter)="playlistModal.createPlaylist()"
+          placeholder="new playlist name..." />
+        <button class="playlist-create-btn" (click)="playlistModal.createPlaylist()">create</button>
+      </div>
+
+      <div class="playlist-modal-actions">
+        <button class="global-modal-btn cancel-btn" (click)="playlistModal.close()">cancel</button>
+        <button class="global-modal-btn confirm-btn" (click)="playlistModal.save()">add to selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Playlist Modal — root level, guaranteed above header/footer -->
+  <div class="global-modal-backdrop" *ngIf="playlistModal.editingPlaylist()" (click)="playlistModal.closeEdit()">
+    <div class="playlist-modal-popup edit-playlist-popup" (click)="$event.stopPropagation()">
+      <h4 class="playlist-modal-title">edit playlist</h4>
+
+      <div class="playlist-create-row">
+        <input type="text" class="playlist-create-input" [ngModel]="playlistModal.editingPlaylistName()"
+          (ngModelChange)="playlistModal.editingPlaylistName.set($event)" placeholder="playlist name..." />
+      </div>
+
+      <div class="playlist-modal-list edit-list" cdkDropList
+        (cdkDropListDropped)="playlistModal.onDropTrack($event.previousIndex, $event.currentIndex)">
+        <div class="playlist-edit-track-item" *ngFor="let track of playlistModal.editingPlaylistTracks(); let i = index"
+          cdkDrag>
+          <span class="track-index">{{ i + 1 }}</span>
+          <div class="track-details-meta">
+            <span class="track-title-text">{{ track.title }}</span>
+            <span class="track-artist-text">{{ track.artist }}</span>
+          </div>
+          <div class="track-item-actions">
+            <button class="reorder-btn" [disabled]="i === 0"
+              (click)="playlistModal.moveTrackInEditing(i, 'up')">▲</button>
+            <button class="reorder-btn" [disabled]="i === playlistModal.editingPlaylistTracks().length - 1"
+              (click)="playlistModal.moveTrackInEditing(i, 'down')">▼</button>
+            <button class="remove-track-btn" (click)="playlistModal.removeTrackFromEditing(i)">✕</button>
+          </div>
+        </div>
+        <div class="playlist-empty" *ngIf="playlistModal.editingPlaylistTracks().length === 0">
+          no songs in this playlist.
+        </div>
+      </div>
+
+      <div class="playlist-modal-actions">
+        <button class="global-modal-btn cancel-btn" (click)="playlistModal.closeEdit()">cancel</button>
+        <button class="global-modal-btn confirm-btn" (click)="playlistModal.savePlaylistChanges()">save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Queue/Playlist Modal — root level, guaranteed above header/footer -->
+  <div class="global-modal-backdrop" *ngIf="playlistModal.activeSaveQueue()" (click)="playlistModal.closeSaveQueue()">
+    <div class="playlist-modal-popup" (click)="$event.stopPropagation()">
+      <h4 class="playlist-modal-title">save playlist</h4>
+      <p class="playlist-modal-desc">enter a name for your play queue playlist.</p>
+
+      <div class="playlist-create-row">
+        <input type="text" class="playlist-create-input" [ngModel]="playlistModal.saveQueuePlaylistName()"
+          (ngModelChange)="playlistModal.saveQueuePlaylistName.set($event)"
+          (keydown.enter)="playlistModal.confirmSaveQueue()" placeholder="playlist name..." />
+      </div>
+
+      <div class="playlist-modal-actions">
+        <button class="global-modal-btn cancel-btn" (click)="playlistModal.closeSaveQueue()">cancel</button>
+        <button class="global-modal-btn confirm-btn" (click)="playlistModal.confirmSaveQueue()">save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Playlist Modal — root level, guaranteed above header/footer -->
+  <div class="global-modal-backdrop" *ngIf="playlistModal.activeCreatePlaylist()"
+    (click)="playlistModal.closeCreatePlaylist()">
+    <div class="playlist-modal-popup create-playlist-popup" (click)="$event.stopPropagation()">
+      <h4 class="playlist-modal-title">create playlist</h4>
+      <p class="playlist-modal-desc">create a new playlist in your library.</p>
+
+      <div class="playlist-create-row">
+        <input type="text" class="playlist-create-input" [ngModel]="playlistModal.createPlaylistName()"
+          (ngModelChange)="playlistModal.createPlaylistName.set($event)"
+          (keydown.enter)="playlistModal.confirmCreatePlaylist()" placeholder="playlist name..." />
+      </div>
+
+      <div class="playlist-create-row search">
+        <input type="text" class="playlist-create-input" [ngModel]="playlistModal.createPlaylistSearchQuery()"
+          (ngModelChange)="playlistModal.createPlaylistSearchQuery.set($event)"
+          placeholder="search / filter tracks..." />
+      </div>
+
+      <!-- Scrollable list of all library tracks with checkboxes -->
+      <div class="playlist-modal-list create-grid-list">
+        <label class="playlist-check-item" *ngFor="let track of playlistModal.createPlaylistFilteredTracks()">
+          <input type="checkbox" [checked]="playlistModal.createPlaylistSelectedTrackPaths().includes(track.filePath)"
+            (change)="playlistModal.toggleCreatePlaylistTrack(track.filePath)" />
+          <div class="track-details-meta">
+            <span class="track-title-text">{{ track.title }}</span>
+            <span class="track-artist-text">{{ track.artist }}</span>
+          </div>
+        </label>
+        <div class="playlist-empty" *ngIf="playlistModal.createPlaylistFilteredTracks().length === 0">
+          no tracks found in library.
+        </div>
+      </div>
+
+      <div class="playlist-modal-actions">
+        <button class="global-modal-btn cancel-btn" (click)="playlistModal.closeCreatePlaylist()">cancel</button>
+        <button class="global-modal-btn confirm-btn" (click)="playlistModal.confirmCreatePlaylist()">create</button>
+      </div>
+    </div>
+  </div>
+</div>

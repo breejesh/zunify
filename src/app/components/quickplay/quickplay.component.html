@@ -1,0 +1,157 @@
+<div class="quickplay-container animate-fade-slide">
+  <!-- Loading state -->
+  <div class="zune-loading-container" *ngIf="libraryService.isLoading()">
+    <div class="zune-loading-dots">
+      <div class="zune-dot"></div>
+      <div class="zune-dot"></div>
+      <div class="zune-dot"></div>
+    </div>
+    <div class="zune-loading-text">loading library...</div>
+  </div>
+
+  <div class="quickplay-scroll-pane" *ngIf="!libraryService.isLoading()">
+    <!-- Welcome/Pins Column -->
+    <div class="quickplay-column welcome-column">
+      <div class="section-title welcome-title">welcome</div>
+      <p class="welcome-text">
+        Click any item in Quickplay to dive right in. Or start building your offline collection in the settings tab by
+        selecting your music folders.
+      </p>
+
+      <br />
+
+      <div class="pins-list">
+        <button class="pin-item" (click)="settingsService.setView('collection')">
+          <div class="pin-icon">
+            <svg viewBox="0 0 24 24" class="pin-svg">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h6V3h-8z" />
+            </svg>
+          </div>
+          <div class="pin-details">
+            <span class="pin-main">GO TO YOUR COLLECTION</span>
+            <span class="pin-sub">Browse all music</span>
+          </div>
+        </button>
+
+        <button class="pin-item" (click)="settingsService.setView('settings')">
+          <div class="pin-icon">
+            <svg viewBox="0 0 24 24" class="pin-svg">
+              <path
+                d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" />
+            </svg>
+          </div>
+          <div class="pin-details">
+            <span class="pin-main">MANAGE LIBRARY FOLDERS</span>
+            <span class="pin-sub">Add folders to scan</span>
+          </div>
+        </button>
+
+        <button class="pin-item" (click)="settingsService.setView('settings')">
+          <div class="pin-icon">
+            <svg viewBox="0 0 24 24" class="pin-svg">
+              <path
+                d="M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9s1.5.67 1.5 1.5S7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5S18.33 12 17.5 12z" />
+            </svg>
+          </div>
+          <div class="pin-details">
+            <span class="pin-main">THEMES & ACCENTS</span>
+            <span class="pin-sub">Customize colors</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- New Column (Random size vertical mosaic scroll) -->
+    <div class="quickplay-column new-column">
+      <div class="section-title new-title">new</div>
+      <div class="new-grid" *ngIf="newTracks().length > 0; else emptyNew">
+        <div class="new-tile" *ngFor="let track of newTracks(); let idx = index" (click)="playTrack(track)">
+          <div class="tile-art-wrapper">
+            <app-album-art [artKey]="track.albumArtKey"></app-album-art>
+            <div class="tile-play-overlay">
+              <svg viewBox="0 0 24 24" class="tile-play-svg">
+                <polygon points="8,5 19,12 8,19" />
+              </svg>
+            </div>
+          </div>
+          <div class="tile-meta">
+            <div class="tile-title">{{ track.title }}</div>
+            <div class="tile-artist">{{ track.artist }}</div>
+          </div>
+        </div>
+      </div>
+      <ng-template #emptyNew>
+        <div class="empty-column-state">
+          No music scanned yet.<br>
+          <a (click)="settingsService.setView('settings')" class="accent-link">Add folders</a> to scan.
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Playlists Column (Grid collage) -->
+    <div class="quickplay-column playlists-column">
+      <div class="column-header-row">
+        <div class="section-title playlists-title">playlists</div>
+        <button class="create-playlist-btn" (click)="playlistModal.openCreatePlaylist()">+ create</button>
+      </div>
+      <div class="playlists-grid" *ngIf="playlists().length > 0; else emptyPlaylists">
+        <div class="playlist-tile" *ngFor="let pl of playlists()" (click)="playPlaylist(pl)">
+          <div class="playlist-art-container">
+            <div class="playlist-collage mosaic-grid">
+              <app-album-art *ngFor="let key of getPlaylistMosaicArts(pl); let idx = index" [artKey]="key"
+                [class.large-cell]="idx === 0" [class.small-cell]="idx > 0"></app-album-art>
+            </div>
+            <!-- Sleek Zune overlay with info -->
+            <div class="playlist-overlay">
+              <div class="playlist-info">
+                <span class="playlist-name-text">{{ pl.name }}</span>
+                <span class="playlist-track-count">{{ getPlaylistCount(pl) }} songs</span>
+              </div>
+              <div class="playlist-actions-overlay">
+                <button class="playlist-action-btn edit-btn" (click)="editPlaylist($event, pl)" title="Edit Playlist">
+                  <svg viewBox="0 0 24 24" class="action-icon-svg">
+                    <path
+                      d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                      fill="currentColor" />
+                  </svg>
+                </button>
+                <button class="playlist-action-btn delete-btn" (click)="deletePlaylist($event, pl.id!)"
+                  title="Delete Playlist">
+                  <svg viewBox="0 0 24 24" class="action-icon-svg">
+                    <path
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                      fill="currentColor" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #emptyPlaylists>
+        <div class="empty-column-state">
+          No playlists saved yet.<br>Save a queue as a playlist from Now Playing.
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- History Column -->
+    <div class="quickplay-column history-column">
+      <div class="section-title history-title">history</div>
+      <div class="history-list" *ngIf="recentTracks().length > 0; else emptyHistory">
+        <div class="history-item" *ngFor="let track of recentTracks()" (click)="playTrack(track)">
+          <div class="history-art-wrapper">
+            <app-album-art [artKey]="track.albumArtKey"></app-album-art>
+          </div>
+          <div class="history-meta">
+            <span class="history-track-title">{{ track.title }}</span>
+            <span class="history-track-artist">{{ track.artist }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #emptyHistory>
+        <div class="empty-column-state">
+          Your playback history will appear here once you start listening.
+        </div>
+      </ng-template>
+    </div>
