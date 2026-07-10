@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/zunify/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

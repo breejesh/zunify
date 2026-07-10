@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export type ZuneTheme = 'dark' | 'light' | 'original';
 export type ZuneAccent = 'orange' | 'magenta' | 'cyan' | 'green' | 'red' | 'yellow';
@@ -11,12 +12,17 @@ export class SettingsService {
   theme = signal<ZuneTheme>('original');
   accentColor = signal<ZuneAccent>('magenta');
   currentView = signal<ZunifyView>('quickplay');
+  isBrowser = false;
 
-  constructor() {
-    this.loadSettings();
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      this.loadSettings();
+    }
   }
 
   loadSettings() {
+    if (!this.isBrowser) return;
     const t = localStorage.getItem('zunify-theme') as ZuneTheme;
     const a = localStorage.getItem('zunify-accent') as ZuneAccent;
     if (t) this.theme.set(t);
@@ -26,13 +32,17 @@ export class SettingsService {
 
   setTheme(t: ZuneTheme) {
     this.theme.set(t);
-    localStorage.setItem('zunify-theme', t);
+    if (this.isBrowser) {
+      localStorage.setItem('zunify-theme', t);
+    }
     this.applyStyles();
   }
 
   setAccent(a: ZuneAccent) {
     this.accentColor.set(a);
-    localStorage.setItem('zunify-accent', a);
+    if (this.isBrowser) {
+      localStorage.setItem('zunify-accent', a);
+    }
     this.applyStyles();
   }
 
@@ -42,6 +52,7 @@ export class SettingsService {
   }
 
   applyStyles() {
+    if (!this.isBrowser) return;
     const root = document.documentElement;
     
     const isDarkTheme = this.theme() === 'dark';

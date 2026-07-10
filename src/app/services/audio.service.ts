@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { TrackRecord, DbService } from './db.service';
 import { LibraryService } from './library.service';
 
@@ -6,7 +7,7 @@ import { LibraryService } from './library.service';
   providedIn: 'root'
 })
 export class AudioService {
-  private audio = new Audio();
+  private audio!: HTMLAudioElement;
   private currentObjectUrl: string | null = null;
 
   // Angular Signals for reactive state
@@ -23,17 +24,23 @@ export class AudioService {
 
   // Track original queue for shuffle toggle
   private originalQueue: TrackRecord[] = [];
+  isBrowser = false;
 
   constructor(
     private libraryService: LibraryService,
-    private db: DbService
+    private db: DbService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.initAudioListeners();
-    this.initMediaSession();
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      this.audio = new Audio();
+      this.initAudioListeners();
+      this.initMediaSession();
 
-    // Set initial volume
-    this.audio.volume = this.volume() / 100;
-    this.restoreState();
+      // Set initial volume
+      this.audio.volume = this.volume() / 100;
+      this.restoreState();
+    }
   }
 
   private initAudioListeners() {
@@ -321,6 +328,7 @@ export class AudioService {
   }
 
   private persistState() {
+    if (!this.isBrowser) return;
     localStorage.setItem('zunify-volume', this.volume().toString());
     localStorage.setItem('zunify-muted', this.isMuted().toString());
     localStorage.setItem('zunify-repeat', this.repeat());
@@ -339,6 +347,7 @@ export class AudioService {
   }
 
   async restoreState() {
+    if (!this.isBrowser) return;
     try {
       const v = localStorage.getItem('zunify-volume');
       if (v) {

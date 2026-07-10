@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsService, ZunifyView } from './services/settings.service';
@@ -12,6 +12,7 @@ import { CollectionComponent } from './components/collection/collection.componen
 import { NowPlayingComponent } from './components/now-playing/now-playing.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AlbumArtComponent } from './components/album-art/album-art.component';
+import { SeoService } from './services/seo.service';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -66,8 +67,17 @@ export class AppComponent {
     public libraryService: LibraryService,
     public modalService: ModalService,
     public playlistModal: PlaylistModalService,
-    private db: DbService
+    private db: DbService,
+    private seoService: SeoService
   ) {
+    // Reactive SEO Meta and Structured Data Update
+    effect(() => {
+      const view = this.activeView();
+      // Track is also tracked by this effect to dynamically change title/meta when song changes in nowplaying
+      const track = this.currentTrack();
+      this.updateSeoForView(view);
+    });
+
     // Detect standalone mode
     if (typeof window !== 'undefined') {
       this.isStandalone = window.matchMedia('(display-mode: standalone)').matches;
@@ -85,6 +95,58 @@ export class AppComponent {
         this.isStandalone = true;
       });
     }
+  }
+
+  updateSeoForView(view: string) {
+    let title = 'Retro Zune Offline PWA Music Player';
+    let description = 'An offline-first music player PWA built in Angular, recreating the classic Zune Desktop App Metro user interface. Scan local directories and play lossless audio.';
+    let keywords = 'Zune, Music Player, Offline Player, PWA, Angular, Retro Zune, Audio Player';
+
+    if (view === 'collection') {
+      title = 'My Collection - Offline Music Library';
+      description = 'Browse your offline music library, artists, albums, playlists, and songs. Fully scanned and parsed from local audio metadata.';
+      keywords = 'Zune Collection, Offline Library, Music Metadata, Playlists';
+    } else if (view === 'settings') {
+      title = 'Settings & Customization';
+      description = 'Customize your Zunify experience. Toggle light and dark themes, accent colors (magenta, orange, cyan, green, red, yellow), and reset database library.';
+      keywords = 'Zune Settings, Custom Accent, Zune Themes';
+    } else if (view === 'nowplaying') {
+      const track = this.currentTrack();
+      title = track ? `Now Playing: ${track.title} - ${track.artist}` : 'Now Playing - Zunify Player';
+      description = track ? `Currently listening to "${track.title}" by ${track.artist} on Zunify Retro Music Player.` : 'See the retro Zune visualization and album art for your currently playing song.';
+      keywords = 'Zune Now Playing, Retro Visualization, Music Player';
+    }
+
+    this.seoService.updateTags({
+      title,
+      description,
+      keywords,
+      url: 'https://zunify-84327.web.app',
+      image: 'https://zunify-84327.web.app/assets/og-image.png',
+      robots: 'index, follow'
+    });
+
+    // Inject rich search result schemas (SoftwareApplication)
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      'name': 'Zunify',
+      'operatingSystem': 'Web, Windows, macOS, Linux, Android, iOS',
+      'applicationCategory': 'MultimediaApplication',
+      'browserRequirements': 'Requires HTML5 audio capabilities and File System Access API support',
+      'description': description,
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'USD'
+      },
+      'author': {
+        '@type': 'Organization',
+        'name': 'Zunify Team',
+        'url': 'https://zunify-84327.web.app'
+      }
+    };
+    this.seoService.injectSchema(schema);
   }
 
   installPWA() {

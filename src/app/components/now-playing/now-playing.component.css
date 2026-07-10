@@ -567,7 +567,7 @@
 }
 
 .queue-title {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -576,16 +576,16 @@
 }
 
 .queue-artist {
-  font-size: 0.7rem;
-  color: #888888 !important;
+  font-size: 0.8rem;
+  color: #aaaaaa !important;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .queue-duration {
-  font-size: 0.75rem;
-  color: #888888 !important;
+  font-size: 0.85rem;
+  color: #aaaaaa !important;
   flex-shrink: 0;
   margin-left: 12px;
   text-align: right;
@@ -699,7 +699,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff;
   opacity: 0.5;
 }
 

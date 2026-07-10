@@ -1,6 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, PLATFORM_ID, Inject } from '@angular/core';
 import { DbService, TrackRecord, FolderRecord, PlaylistRecord } from './db.service';
 import { BehaviorSubject } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 // Import music-metadata-browser
 import { parseBlob } from 'music-metadata-browser';
@@ -21,8 +22,15 @@ export class LibraryService {
   history = signal<TrackRecord[]>([]);
   isLoading = signal<boolean>(true);
 
-  constructor(private db: DbService) {
-    this.loadLibrary();
+  constructor(
+    private db: DbService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    if (isPlatformBrowser(platformId)) {
+      this.loadLibrary();
+    } else {
+      this.isLoading.set(false);
+    }
   }
 
   // Load library from DB on startup
