@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-PWA%20%2F%20Web-FF5000?style=flat-square" alt="Platform">
-  <img src="https://img.shields.io/badge/Angular-19.0-DD0031?style=flat-square&logo=angular" alt="Angular">
-  <img src="https://img.shields.io/badge/Database-IndexedDB%20%2F%20Dexie-00a2e8?style=flat-square" alt="Database">
-  <img src="https://img.shields.io/badge/Metadata-music--metadata--browser-8cbf26?style=flat-square" alt="Metadata">
-  <img src="https://img.shields.io/badge/Privacy-100%25%20Offline-15803D?style=flat-square" alt="Privacy First">
+  <a href="#zunify"><img src="https://img.shields.io/badge/Platform-PWA%20%2F%20Web-FF5000?style=flat-square" alt="Platform"></a>
+  <a href="#zunify"><img src="https://img.shields.io/badge/Angular-19.0-DD0031?style=flat-square&logo=angular" alt="Angular"></a>
+  <a href="#zunify"><img src="https://img.shields.io/badge/Database-IndexedDB%20%2F%20Dexie-00a2e8?style=flat-square" alt="Database"></a>
+  <a href="#zunify"><img src="https://img.shields.io/badge/Metadata-music--metadata--browser-8cbf26?style=flat-square" alt="Metadata"></a>
+  <a href="#zunify"><img src="https://img.shields.io/badge/Privacy-100%25%20Offline-15803D?style=flat-square" alt="Privacy First"></a>
 </p>
 
 <p align="center">
