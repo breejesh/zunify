@@ -18,6 +18,12 @@
   <img src="https://img.shields.io/badge/Privacy-100%25%20Offline-15803D?style=flat-square" alt="Privacy First">
 </p>
 
+<p align="center">
+  <a href="https://zunify.breejeshrathod.com/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Launch%20Zunify-FF5000?style=for-the-badge" alt="Live Demo">
+  </a>
+</p>
+
 ---
 
 ### Why Zunify?
