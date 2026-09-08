@@ -31,7 +31,7 @@
           all artists
         </button>
         <button class="list-item artist-item" 
-                *ngFor="let artist of filteredArtists()" 
+                *ngFor="let artist of filteredArtists(); trackBy: trackByArtist" 
                 [class.selected]="selectedArtist() === artist" 
                 (click)="selectArtist(artist)">
           {{ artist }}
@@ -80,7 +80,7 @@
 
         <!-- Individual Album Cards -->
         <div class="album-card" 
-             *ngFor="let album of filteredAlbums()" 
+             *ngFor="let album of filteredAlbums(); trackBy: trackByAlbum" 
              [class.selected]="selectedAlbum() === album.name" 
              (click)="selectAlbum(album.name)">
           <div class="album-art-wrapper">
@@ -124,7 +124,7 @@
 
       <div class="scroll-list songs-list" *ngIf="filteredSongs().length > 0; else noSongs">
         <div class="song-item" 
-             *ngFor="let track of filteredSongs()" 
+             *ngFor="let track of filteredSongs(); trackBy: trackByTrackId" 
              [class.playing]="audioService.currentTrack()?.id === track.id"
              (dblclick)="playTrack(track)">
           <div class="song-drag-handle" (click)="playTrack(track)">▶</div>

@@ -44,10 +44,18 @@ export class AudioService {
     }
   }
 
+  private lastStorageSaveTime = 0;
+
   private initAudioListeners() {
     this.audio.addEventListener('timeupdate', () => {
-      this.currentTime.set(this.audio.currentTime);
-      localStorage.setItem('zunify-current-time', this.audio.currentTime.toString());
+      const nowTime = this.audio.currentTime;
+      this.currentTime.set(nowTime);
+      
+      const now = Date.now();
+      if (now - this.lastStorageSaveTime > 2500) {
+        this.lastStorageSaveTime = now;
+        localStorage.setItem('zunify-current-time', nowTime.toString());
+      }
     });
 
     this.audio.addEventListener('durationchange', () => {
@@ -62,6 +70,7 @@ export class AudioService {
     });
 
     this.audio.addEventListener('ended', () => {
+      localStorage.setItem('zunify-current-time', this.audio.currentTime.toString());
       this.handleSongEnded();
     });
 
@@ -73,7 +82,16 @@ export class AudioService {
     this.audio.addEventListener('pause', () => {
       this.isPlaying.set(false);
       this.updateMediaSessionPlaybackState('paused');
+      localStorage.setItem('zunify-current-time', this.audio.currentTime.toString());
     });
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', () => {
+        if (this.audio) {
+          localStorage.setItem('zunify-current-time', this.audio.currentTime.toString());
+        }
+      });
+    }
   }
 
   // Play a track directly

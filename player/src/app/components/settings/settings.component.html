@@ -10,7 +10,7 @@
       <p class="section-desc">Manage folders Zunify scans for audio files. Changes take effect on next scan.</p>
 
       <div class="folder-list" *ngIf="libraryService.folders().length > 0; else noFolders">
-        <div class="folder-item" *ngFor="let folder of libraryService.folders()">
+        <div class="folder-item" *ngFor="let folder of libraryService.folders(); trackBy: trackByFolderId">
           <div class="folder-info" [title]="folder.path || folder.pathName">
             <span class="folder-icon">📁</span>
             <div class="folder-details">

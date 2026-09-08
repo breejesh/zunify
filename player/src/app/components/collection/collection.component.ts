@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LibraryService } from '../../services/library.service';
@@ -16,7 +16,8 @@ export type SongSortOption = 'trackno' | 'az' | 'za' | 'duration' | 'plays';
   standalone: true,
   imports: [CommonModule, FormsModule, AlbumArtComponent],
   templateUrl: './collection.component.html',
-  styleUrl: './collection.component.css'
+  styleUrl: './collection.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionComponent implements OnInit {
   // Independent Column states using Signals
@@ -247,9 +248,27 @@ export class CollectionComponent implements OnInit {
   async toggleHeart(track: TrackRecord, event: Event) {
     event.stopPropagation();
     if (track.id) {
-      await this.db.toggleHeart(track.id, track.heart);
-      await this.libraryService.loadLibrary(); // reload
+      await this.libraryService.toggleTrackHeart(track.id, track.heart);
+      const current = this.audioService.currentTrack();
+      if (current && current.id === track.id) {
+        this.audioService.currentTrack.set({
+          ...current,
+          heart: current.heart === 1 ? 0 : 1
+        });
+      }
     }
+  }
+
+  trackByArtist(index: number, artist: string): string {
+    return artist;
+  }
+
+  trackByAlbum(index: number, album: { name: string; artist: string }): string {
+    return `${album.artist}_${album.name}`;
+  }
+
+  trackByTrackId(index: number, track: TrackRecord): any {
+    return track.id || track.filePath || index;
   }
 
   playTrack(track: TrackRecord) {

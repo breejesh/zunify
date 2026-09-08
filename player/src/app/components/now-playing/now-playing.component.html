@@ -107,7 +107,7 @@
     </div>
 
     <div class="queue-list">
-      <div class="queue-item" *ngFor="let item of audioService.queue(); let i = index"
+      <div class="queue-item" *ngFor="let item of audioService.queue(); let i = index; trackBy: trackByQueueItem"
         [class.active]="activeIdx() === i" (click)="playQueueItem(item, i)">
 
         <div class="queue-eq" *ngIf="activeIdx() === i">

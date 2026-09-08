@@ -40,43 +40,43 @@ export const DEMO_TRACKS: Omit<TrackRecord, 'id'>[] = [
     filePath: 'demo:track-3',
     folderId: 0,
     title: 'Digital Sunset',
-    artist: 'Solara Ray',
-    album: 'Fragments',
-    genre: 'Electronic',
+    artist: 'Zune Collective',
+    album: 'Metro Nights',
+    genre: 'Synthwave',
     duration: 198,
-    trackNumber: 1,
+    trackNumber: 3,
     year: 2026,
     heart: 0,
     playCount: 22,
-    albumArtKey: 'solara ray - fragments'
+    albumArtKey: 'zune collective - metro nights'
   },
   {
     filePath: 'demo:track-4',
     folderId: 0,
     title: 'Electric Velocity',
-    artist: 'Solara Ray',
-    album: 'Fragments',
-    genre: 'Electronic',
+    artist: 'Zune Collective',
+    album: 'Metro Nights',
+    genre: 'Synthwave',
     duration: 235,
-    trackNumber: 2,
+    trackNumber: 4,
     year: 2026,
     heart: 0,
     playCount: 15,
-    albumArtKey: 'solara ray - fragments'
+    albumArtKey: 'zune collective - metro nights'
   },
   {
     filePath: 'demo:track-5',
     folderId: 0,
     title: 'Grid Walker',
-    artist: 'Ryan Jones',
-    album: 'Artistic Echoes',
-    genre: 'Indie',
+    artist: 'Zune Collective',
+    album: 'Metro Nights',
+    genre: 'Synthwave',
     duration: 242,
-    trackNumber: 1,
+    trackNumber: 5,
     year: 2026,
     heart: 1,
     playCount: 29,
-    albumArtKey: 'ryan jones - artistic echoes'
+    albumArtKey: 'zune collective - metro nights'
   },
 
   // Album 2: Analog Dreams - Velvet Drive (Chillwave / Lo-Fi)
@@ -98,58 +98,58 @@ export const DEMO_TRACKS: Omit<TrackRecord, 'id'>[] = [
   {
     filePath: 'demo:track-7',
     folderId: 0,
-    title: 'Nocturnal Highway',
-    artist: 'Sebastian Vale',
-    album: 'Night Drive',
+    title: 'Subtle Echoes',
+    artist: 'Velvet Drive',
+    album: 'Analog Dreams',
     genre: 'Lo-Fi',
     duration: 174,
-    trackNumber: 1,
+    trackNumber: 2,
     year: 2025,
     heart: 0,
     playCount: 18,
-    albumArtKey: 'sebastian vale - night drive'
+    albumArtKey: 'velvet drive - analog dreams'
   },
   {
     filePath: 'demo:track-8',
     folderId: 0,
-    title: 'Midnight Lotus',
-    artist: 'Sebastian Vale',
-    album: 'Night Drive',
+    title: 'Analog Solitude',
+    artist: 'Velvet Drive',
+    album: 'Analog Dreams',
     genre: 'Lo-Fi',
     duration: 210,
-    trackNumber: 2,
+    trackNumber: 3,
     year: 2025,
     heart: 1,
     playCount: 33,
-    albumArtKey: 'sebastian vale - night drive'
+    albumArtKey: 'velvet drive - analog dreams'
   },
   {
     filePath: 'demo:track-9',
     folderId: 0,
-    title: 'Blue Notes After Hours',
-    artist: 'Joy Fabiani',
-    album: 'Piano Jazz Nights',
-    genre: 'Jazz',
+    title: 'Warm Vinyl',
+    artist: 'Velvet Drive',
+    album: 'Analog Dreams',
+    genre: 'Lo-Fi',
     duration: 225,
-    trackNumber: 1,
+    trackNumber: 4,
     year: 2025,
     heart: 0,
     playCount: 12,
-    albumArtKey: 'joy fabiani - piano jazz nights'
+    albumArtKey: 'velvet drive - analog dreams'
   },
   {
     filePath: 'demo:track-10',
     folderId: 0,
-    title: 'Ocean Inception',
-    artist: 'Michael Howard',
-    album: 'Blue Inception',
-    genre: 'Ambient',
+    title: 'Dusk in Kyoto',
+    artist: 'Velvet Drive',
+    album: 'Analog Dreams',
+    genre: 'Lo-Fi',
     duration: 200,
-    trackNumber: 1,
+    trackNumber: 5,
     year: 2025,
     heart: 0,
     playCount: 26,
-    albumArtKey: 'michael howard - blue inception'
+    albumArtKey: 'velvet drive - analog dreams'
   },
 
   // Album 3: Nocturnes & Classics - Frédéric Chopin (Public Domain Classical)
@@ -185,30 +185,30 @@ export const DEMO_TRACKS: Omit<TrackRecord, 'id'>[] = [
   {
     filePath: 'demo:track-13',
     folderId: 0,
-    title: 'Electric Resonance',
-    artist: 'Sophia Fish',
-    album: 'Electric Wave',
-    genre: 'Synthwave',
+    title: 'Minute Waltz, Op. 64 No. 1',
+    artist: 'Frédéric Chopin',
+    album: 'Nocturnes & Classics',
+    genre: 'Classical',
     duration: 130,
-    trackNumber: 1,
-    year: 2026,
+    trackNumber: 3,
+    year: 1847,
     heart: 0,
     playCount: 14,
-    albumArtKey: 'sophia fish - electric wave'
+    albumArtKey: 'frédéric chopin - nocturnes & classics'
   },
   {
     filePath: 'demo:track-14',
     folderId: 0,
-    title: 'Midnight Diva',
-    artist: 'Samantha Rhodes',
-    album: 'Phantom Diva',
-    genre: 'Soul',
+    title: 'Fantaisie-Impromptu, Op. 66',
+    artist: 'Frédéric Chopin',
+    album: 'Nocturnes & Classics',
+    genre: 'Classical',
     duration: 285,
-    trackNumber: 1,
-    year: 2025,
+    trackNumber: 4,
+    year: 1834,
     heart: 1,
     playCount: 37,
-    albumArtKey: 'samantha rhodes - phantom diva'
+    albumArtKey: 'frédéric chopin - nocturnes & classics'
   },
 
   // Album 4: Impressionist Horizons - Claude Debussy (Public Domain Classical)
@@ -244,30 +244,30 @@ export const DEMO_TRACKS: Omit<TrackRecord, 'id'>[] = [
   {
     filePath: 'demo:track-17',
     folderId: 0,
-    title: 'Dark Shadow Romance',
-    artist: 'Jeanne Lebras',
-    album: 'The Stranger Inside',
-    genre: 'Jazz',
+    title: 'Rêverie',
+    artist: 'Claude Debussy',
+    album: 'Impressionist Horizons',
+    genre: 'Classical',
     duration: 250,
-    trackNumber: 1,
-    year: 2025,
+    trackNumber: 3,
+    year: 1890,
     heart: 0,
     playCount: 23,
-    albumArtKey: 'jeanne lebras - the stranger inside'
+    albumArtKey: 'claude debussy - impressionist horizons'
   },
   {
     filePath: 'demo:track-18',
     folderId: 0,
-    title: 'Acoustic Memories',
-    artist: 'Paul Smith',
-    album: 'Love Song',
-    genre: 'Acoustic',
+    title: 'La Fille aux Cheveux de Lin',
+    artist: 'Claude Debussy',
+    album: 'Impressionist Horizons',
+    genre: 'Classical',
     duration: 175,
-    trackNumber: 1,
-    year: 2025,
+    trackNumber: 4,
+    year: 1910,
     heart: 0,
     playCount: 11,
-    albumArtKey: 'paul smith - love song'
+    albumArtKey: 'claude debussy - impressionist horizons'
   },
 
   // Album 5: Cybernetic Pulse - Subtle Flux (Ambient / IDM)
@@ -302,30 +302,30 @@ export const DEMO_TRACKS: Omit<TrackRecord, 'id'>[] = [
   {
     filePath: 'demo:track-21',
     folderId: 0,
-    title: 'Vintage Cassette Warmth',
-    artist: 'Tape Archive',
-    album: 'Maroon Noise',
-    genre: 'Mixtape',
+    title: 'Atmospheric Entry',
+    artist: 'Subtle Flux',
+    album: 'Cybernetic Pulse',
+    genre: 'Ambient',
     duration: 228,
-    trackNumber: 1,
+    trackNumber: 3,
     year: 2026,
     heart: 0,
     playCount: 8,
-    albumArtKey: 'tape archive - maroon noise'
+    albumArtKey: 'subtle flux - cybernetic pulse'
   },
   {
     filePath: 'demo:track-22',
     folderId: 0,
-    title: 'Reel-to-Reel Drift',
-    artist: 'Tape Archive',
-    album: 'Maroon Noise',
-    genre: 'Mixtape',
+    title: 'Orbital Echo',
+    artist: 'Subtle Flux',
+    album: 'Cybernetic Pulse',
+    genre: 'Ambient',
     duration: 245,
-    trackNumber: 2,
+    trackNumber: 4,
     year: 2026,
     heart: 0,
     playCount: 14,
-    albumArtKey: 'tape archive - maroon noise'
+    albumArtKey: 'subtle flux - cybernetic pulse'
   },
 
   // Album 6: Golden Era Ragtime - Scott Joplin (Public Domain Jazz & Ragtime)
@@ -361,30 +361,30 @@ export const DEMO_TRACKS: Omit<TrackRecord, 'id'>[] = [
   {
     filePath: 'demo:track-25',
     folderId: 0,
-    title: 'Geometric Echo',
-    artist: 'Solara Ray',
-    album: 'Fragments',
-    genre: 'Electronic',
+    title: 'Bethena (A Concert Waltz)',
+    artist: 'Scott Joplin',
+    album: 'Golden Era Ragtime',
+    genre: 'Ragtime',
     duration: 260,
     trackNumber: 3,
-    year: 2026,
+    year: 1905,
     heart: 0,
     playCount: 17,
-    albumArtKey: 'solara ray - fragments'
+    albumArtKey: 'scott joplin - golden era ragtime'
   },
   {
     filePath: 'demo:track-26',
     folderId: 0,
-    title: 'Neon Horizon Reflection',
-    artist: 'Ryan Jones',
-    album: 'Artistic Echoes',
-    genre: 'Indie',
-    duration: 220,
-    trackNumber: 2,
-    year: 2026,
+    title: 'Solace (A Mexican Serenade)',
+    artist: 'Scott Joplin',
+    album: 'Golden Era Ragtime',
+    genre: 'Ragtime',
+    duration: 230,
+    trackNumber: 4,
+    year: 1909,
     heart: 1,
-    playCount: 35,
-    albumArtKey: 'ryan jones - artistic echoes'
+    playCount: 38,
+    albumArtKey: 'scott joplin - golden era ragtime'
   }
 ];
 

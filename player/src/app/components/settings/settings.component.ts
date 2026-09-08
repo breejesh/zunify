@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryService } from '../../services/library.service';
 import { SettingsService, ZuneTheme, ZuneAccent } from '../../services/settings.service';
@@ -11,7 +11,8 @@ import { ModalService } from '../../services/modal.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+  styleUrl: './settings.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent {
   progressPercent = computed(() => {
@@ -19,6 +20,10 @@ export class SettingsComponent {
     const scanned = this.libraryService.scannedCount$.value;
     return total > 0 ? (scanned / total) * 100 : 0;
   });
+
+  trackByFolderId(index: number, folder: any) {
+    return folder.id || folder.path || index;
+  }
 
   constructor(
     public libraryService: LibraryService,

@@ -141,15 +141,42 @@ export class DbService extends Dexie {
     await this.playlists.delete(id);
   }
 
+  private artUrlCache = new Map<string, string>();
+
+  async getAlbumArtUrl(albumKey: string): Promise<string | null> {
+    const cached = this.artUrlCache.get(albumKey);
+    if (cached) {
+      return cached;
+    }
+    try {
+      const record = await this.albumArt.get(albumKey);
+      if (record && record.blob) {
+        const url = URL.createObjectURL(record.blob);
+        this.artUrlCache.set(albumKey, url);
+        return url;
+      }
+    } catch (e) {
+      console.warn('Failed to load album art from DB:', e);
+    }
+    return null;
+  }
+
   async getAlbumArt(albumKey: string): Promise<AlbumArtRecord | undefined> {
     return this.albumArt.get(albumKey);
   }
 
   async saveAlbumArt(albumKey: string, blob: Blob, mimeType: string): Promise<void> {
+    const oldUrl = this.artUrlCache.get(albumKey);
+    if (oldUrl) {
+      URL.revokeObjectURL(oldUrl);
+      this.artUrlCache.delete(albumKey);
+    }
     await this.albumArt.put({ albumKey, blob, mimeType });
   }
 
   async clearAllData(): Promise<void> {
+    this.artUrlCache.forEach(url => URL.revokeObjectURL(url));
+    this.artUrlCache.clear();
     await this.transaction('rw', [this.folders, this.tracks, this.albumArt, this.playlists, this.history], async () => {
       await this.folders.clear();
       await this.tracks.clear();

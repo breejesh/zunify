@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { LibraryService } from '../../services/library.service';
@@ -14,7 +14,8 @@ import { ModalService } from '../../services/modal.service';
   standalone: true,
   imports: [CommonModule, AlbumArtComponent, DragDropModule],
   templateUrl: './quickplay.component.html',
-  styleUrl: './quickplay.component.css'
+  styleUrl: './quickplay.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuickplayComponent {
   accentOptions: ZuneAccent[] = ['orange', 'magenta', 'cyan', 'green', 'red', 'yellow'];
@@ -71,28 +72,56 @@ export class QuickplayComponent {
     }
   }
 
+  private mosaicCache = new Map<string, string[]>();
+
+  trackByTrackId(index: number, track: TrackRecord): any {
+    return track.id || track.filePath || index;
+  }
+
+  trackByPlaylistId(index: number, pl: PlaylistRecord): any {
+    return pl.id || pl.name || index;
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   getPlaylistCount(playlist: PlaylistRecord): number {
     return playlist.trackPaths.length;
   }
 
   getPlaylistMosaicArts(playlist: PlaylistRecord): string[] {
     const tracks = this.libraryService.tracks();
+    const cacheKey = `${playlist.id || playlist.name}_${playlist.trackPaths.join(',')}_${tracks.length}`;
+    const cached = this.mosaicCache.get(cacheKey);
+    if (cached) return cached;
+
+    const pathMap = new Map<string, string>();
+    for (const t of tracks) {
+      if (t.albumArtKey && t.filePath) {
+        pathMap.set(t.filePath, t.albumArtKey);
+      }
+    }
+
     const artKeys: string[] = [];
     for (const path of playlist.trackPaths) {
-      const t = tracks.find(track => track.filePath === path);
-      if (t?.albumArtKey && !artKeys.includes(t.albumArtKey)) {
-        artKeys.push(t.albumArtKey);
+      const artKey = pathMap.get(path);
+      if (artKey && !artKeys.includes(artKey)) {
+        artKeys.push(artKey);
       }
     }
     
+    let result: string[];
     if (artKeys.length === 0) {
-      return Array(3).fill('');
+      result = Array(3).fill('');
+    } else {
+      result = [];
+      for (let i = 0; i < 3; i++) {
+        result.push(artKeys[i % artKeys.length]);
+      }
     }
 
-    const result: string[] = [];
-    for (let i = 0; i < 3; i++) {
-      result.push(artKeys[i % artKeys.length]);
-    }
+    this.mosaicCache.set(cacheKey, result);
     return result;
   }
 

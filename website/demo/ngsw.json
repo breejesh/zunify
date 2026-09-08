@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1788624896618,
+  "timestamp": 1788891238373,
   "index": "./index.csr.html",
   "assetGroups": [
     {
@@ -11,9 +11,10 @@
         "ignoreVary": true
       },
       "urls": [
+        "./favicon.ico",
         "./index.csr.html",
         "./index.html",
-        "./main-6ZMTIHGD.js",
+        "./main-46AA3URA.js",
         "./manifest.webmanifest",
         "./polyfills-BFOXQLUG.js",
         "./styles-OSIX7VG7.css"
@@ -30,21 +31,12 @@
       "urls": [
         "./assets/covers/analog_dreams.jpg",
         "./assets/covers/chopin_nocturnes.jpg",
-        "./assets/covers/cover_10.jpg",
-        "./assets/covers/cover_13.jpg",
-        "./assets/covers/cover_2.jpg",
-        "./assets/covers/cover_3.jpg",
-        "./assets/covers/cover_4.jpg",
-        "./assets/covers/cover_5.jpg",
-        "./assets/covers/cover_6.jpg",
-        "./assets/covers/cover_7.jpg",
-        "./assets/covers/cover_8.jpg",
-        "./assets/covers/cover_9.jpg",
         "./assets/covers/cyber_pulse.jpg",
         "./assets/covers/debussy_horizons.jpg",
         "./assets/covers/metro_nights.jpg",
         "./assets/covers/ragtime_classics.jpg",
-        "./favicon.svg"
+        "./favicon.svg",
+        "./icon.png"
       ],
       "patterns": []
     }
@@ -53,24 +45,16 @@
   "hashTable": {
     "./assets/covers/analog_dreams.jpg": "0f805ac34eaf2ab43e2122bfa86035013533d336",
     "./assets/covers/chopin_nocturnes.jpg": "33211d8ddb02c1d48e3135919afe400091a652dd",
-    "./assets/covers/cover_10.jpg": "5b279e6bb9657aed5fa2bb203d400de37c35f204",
-    "./assets/covers/cover_13.jpg": "581bf85190bede5f34db76fd032d50cc36b401d8",
-    "./assets/covers/cover_2.jpg": "dcf729233fdef5fd56b37c22cb57d21999d1dbfe",
-    "./assets/covers/cover_3.jpg": "ff0a69a5a91e9475f1fa8b32657d16b13d175931",
-    "./assets/covers/cover_4.jpg": "e8be60829e56b056f8db3a65f9f6ebb9ef10a444",
-    "./assets/covers/cover_5.jpg": "4fa965a5ece0e282332f487e9b19bef7028612e2",
-    "./assets/covers/cover_6.jpg": "9c123fe9fa9836f0319575c4cf10b97e98654607",
-    "./assets/covers/cover_7.jpg": "94b29b6840e23e49d60128fcf4d680ce41c3deec",
-    "./assets/covers/cover_8.jpg": "2eb16011197db820a0c50670dc723c4f4ad1fe99",
-    "./assets/covers/cover_9.jpg": "82a32a0e02a42cbfd947a9c8ded7a0f8e53792fb",
     "./assets/covers/cyber_pulse.jpg": "c5aca6c16d63d089e6602ea941cc0e07956fec2b",
     "./assets/covers/debussy_horizons.jpg": "0774352da945784834c37b47c0b6745a43cc3cb9",
     "./assets/covers/metro_nights.jpg": "969e2e32fd77d420ecf73c8fda46154cc0fbd1b1",
     "./assets/covers/ragtime_classics.jpg": "ffe4fe96338b55ab835889a9afb0cbcb4bc66475",
+    "./favicon.ico": "b20038e09c49562ed9e00b2509628f08953b92fc",
     "./favicon.svg": "e442d5fab6b2d4764b98f179e81da49917e7d7af",
-    "./index.csr.html": "3b60a8ca5e55575edbc8fd0e1754a1fdefff5963",
-    "./index.html": "3418ba91f7385b3ae6acf1dfcb40bce3576a2fd6",
-    "./main-6ZMTIHGD.js": "fec210688d5583d9f95cb548c8699739541eda4a",
+    "./icon.png": "439b4734f402f7a342deef5003fab7f5a1c997c2",
+    "./index.csr.html": "05adcc7d02a7ff399fa36a34009411ec5526c80b",
+    "./index.html": "0894e88b68218a0f568a520d7f079997ae1a1f1c",
+    "./main-46AA3URA.js": "d21ae0db88c424a9d27e767f1345c94440c450a1",
     "./manifest.webmanifest": "3a00646adf5405431eef402c663db49c4623df6f",
     "./polyfills-BFOXQLUG.js": "53e3dfb7a9b76da90af5789784105276616c36b3",
     "./styles-OSIX7VG7.css": "89f5596eaecf16de7159aa6cfd255ef560b5d599"

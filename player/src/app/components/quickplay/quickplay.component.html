@@ -65,7 +65,7 @@
     <div class="quickplay-column new-column">
       <div class="section-title new-title">new</div>
       <div class="new-grid" *ngIf="newTracks().length > 0; else emptyNew">
-        <div class="new-tile" *ngFor="let track of newTracks(); let idx = index" (click)="playTrack(track)">
+        <div class="new-tile" *ngFor="let track of newTracks(); let idx = index; trackBy: trackByTrackId" (click)="playTrack(track)">
           <div class="tile-art-wrapper">
             <app-album-art [artKey]="track.albumArtKey"></app-album-art>
             <div class="tile-play-overlay">
@@ -95,10 +95,10 @@
         <button class="create-playlist-btn" (click)="playlistModal.openCreatePlaylist()">+ create</button>
       </div>
       <div class="playlists-grid" *ngIf="playlists().length > 0; else emptyPlaylists">
-        <div class="playlist-tile" *ngFor="let pl of playlists()" (click)="playPlaylist(pl)">
+        <div class="playlist-tile" *ngFor="let pl of playlists(); trackBy: trackByPlaylistId" (click)="playPlaylist(pl)">
           <div class="playlist-art-container">
             <div class="playlist-collage mosaic-grid">
-              <app-album-art *ngFor="let key of getPlaylistMosaicArts(pl); let idx = index" [artKey]="key"
+              <app-album-art *ngFor="let key of getPlaylistMosaicArts(pl); let idx = index; trackBy: trackByIndex" [artKey]="key"
                 [class.large-cell]="idx === 0" [class.small-cell]="idx > 0"></app-album-art>
             </div>
             <!-- Sleek Zune overlay with info -->
@@ -139,7 +139,7 @@
     <div class="quickplay-column history-column">
       <div class="section-title history-title">history</div>
       <div class="history-list" *ngIf="recentTracks().length > 0; else emptyHistory">
-        <div class="history-item" *ngFor="let track of recentTracks()" (click)="playTrack(track)">
+        <div class="history-item" *ngFor="let track of recentTracks(); trackBy: trackByTrackId" (click)="playTrack(track)">
           <div class="history-art-wrapper">
             <app-album-art [artKey]="track.albumArtKey"></app-album-art>
           </div>

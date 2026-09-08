@@ -1,4 +1,4 @@
-import { Component, computed, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, computed, signal, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AudioService } from '../../services/audio.service';
@@ -21,7 +21,8 @@ interface CollageCell {
   standalone: true,
   imports: [CommonModule, AlbumArtComponent, FormsModule],
   templateUrl: './now-playing.component.html',
-  styleUrl: './now-playing.component.css'
+  styleUrl: './now-playing.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NowPlayingComponent implements OnInit, OnDestroy {
   progressPercent = computed(() => {
@@ -89,7 +90,8 @@ export class NowPlayingComponent implements OnInit, OnDestroy {
     public settingsService: SettingsService,
     public libraryService: LibraryService,
     public playlistModal: PlaylistModalService,
-    private db: DbService
+    private db: DbService,
+    private ngZone: NgZone
   ) { }
 
   ngOnInit() {
@@ -164,92 +166,105 @@ export class NowPlayingComponent implements OnInit, OnDestroy {
   }
 
   startCellRotation() {
-    this.flipIntervalId = setInterval(() => {
-      const currentCells = this.collageCells();
-      if (currentCells.length === 0) return;
+    this.ngZone.runOutsideAngular(() => {
+      this.flipIntervalId = setInterval(() => {
+        const currentCells = this.collageCells();
+        if (currentCells.length === 0) return;
 
-      const tracks = this.libraryService.tracks();
-      const artKeys = tracks
-        .map(t => t.albumArtKey)
-        .filter((k): k is string => k !== undefined && k !== '');
-      const uniqueKeys = Array.from(new Set(artKeys));
-      if (uniqueKeys.length === 0) return;
+        const tracks = this.libraryService.tracks();
+        const artKeys = tracks
+          .map(t => t.albumArtKey)
+          .filter((k): k is string => k !== undefined && k !== '');
+        const uniqueKeys = Array.from(new Set(artKeys));
+        if (uniqueKeys.length === 0) return;
 
-      // Pick 2 random non-flipping cells
-      const candidates = currentCells
-        .map((c, i) => ({ cell: c, index: i }))
-        .filter(c => !c.cell.flipping);
-      const countToFlip = Math.min(candidates.length, 2);
-      const indicesToFlip: number[] = [];
-      while (indicesToFlip.length < countToFlip && candidates.length > 0) {
-        const pick = Math.floor(Math.random() * candidates.length);
-        indicesToFlip.push(candidates[pick].index);
-        candidates.splice(pick, 1);
-      }
+        // Pick 2 random non-flipping cells
+        const candidates = currentCells
+          .map((c, i) => ({ cell: c, index: i }))
+          .filter(c => !c.cell.flipping);
+        const countToFlip = Math.min(candidates.length, 2);
+        const indicesToFlip: number[] = [];
+        while (indicesToFlip.length < countToFlip && candidates.length > 0) {
+          const pick = Math.floor(Math.random() * candidates.length);
+          indicesToFlip.push(candidates[pick].index);
+          candidates.splice(pick, 1);
+        }
 
-      // Step 1: Set flipping = true
-      const flippingCells = [...currentCells];
-      indicesToFlip.forEach(idx => {
-        flippingCells[idx] = { ...flippingCells[idx], flipping: true };
-      });
-      this.collageCells.set(flippingCells);
-
-      // Step 2: Swap art midway through the flip
-      setTimeout(() => {
-        const midCells = [...this.collageCells()];
+        // Step 1: Set flipping = true
+        const flippingCells = [...currentCells];
         indicesToFlip.forEach(idx => {
-          const newArt = uniqueKeys[Math.floor(Math.random() * uniqueKeys.length)];
-          midCells[idx] = { ...midCells[idx], artKey: newArt };
+          flippingCells[idx] = { ...flippingCells[idx], flipping: true };
         });
-        this.collageCells.set(midCells);
-      }, 300);
+        this.collageCells.set(flippingCells);
 
-      // Step 3: Unflip after animation completes
-      setTimeout(() => {
-        const doneCells = [...this.collageCells()];
-        indicesToFlip.forEach(idx => {
-          doneCells[idx] = { ...doneCells[idx], flipping: false };
-        });
-        this.collageCells.set(doneCells);
-      }, 700);
-    }, 4000);
+        // Step 2: Swap art midway through the flip
+        setTimeout(() => {
+          const midCells = [...this.collageCells()];
+          indicesToFlip.forEach(idx => {
+            const newArt = uniqueKeys[Math.floor(Math.random() * uniqueKeys.length)];
+            midCells[idx] = { ...midCells[idx], artKey: newArt };
+          });
+          this.collageCells.set(midCells);
+        }, 300);
+
+        // Step 3: Unflip after animation completes
+        setTimeout(() => {
+          const doneCells = [...this.collageCells()];
+          indicesToFlip.forEach(idx => {
+            doneCells[idx] = { ...doneCells[idx], flipping: false };
+          });
+          this.collageCells.set(doneCells);
+        }, 700);
+      }, 4000);
+    });
   }
 
   startVisualizerAnimation() {
-    this.vizIntervalId = setInterval(() => {
-      const isPlaying = this.audioService.isPlaying();
-      const count = 24;
-      const prev = this.vizHeights();
-      const heights: number[] = [];
-      for (let i = 0; i < count; i++) {
-        // Mountain envelope: 0 at edges, 1.0 at center (narrow spread)
-        const t = i / (count - 1); // 0..1
-        let envelope: number;
-        if (t < 0.35) {
-          envelope = t / 0.35; // ramp up from 0 to 1 in first 35%
-        } else if (t > 0.65) {
-          envelope = (1 - t) / 0.35; // ramp down from 1 to 0 in last 35%
-        } else {
-          envelope = 1.0; // full height in center 30%
-        }
-        // Apply smooth easing to the envelope
-        envelope = envelope * envelope * (3 - 2 * envelope);
+    this.ngZone.runOutsideAngular(() => {
+      this.vizIntervalId = setInterval(() => {
+        const isPlaying = this.audioService.isPlaying();
+        const prev = this.vizHeights();
+        const count = 24;
 
-        if (isPlaying) {
+        if (!isPlaying) {
+          if (prev.length === count && prev.every(v => v === 0)) {
+            return;
+          }
+          this.vizHeights.set(new Array(count).fill(0));
+          return;
+        }
+
+        const heights: number[] = [];
+        for (let i = 0; i < count; i++) {
+          // Mountain envelope: 0 at edges, 1.0 at center (narrow spread)
+          const t = i / (count - 1); // 0..1
+          let envelope: number;
+          if (t < 0.35) {
+            envelope = t / 0.35; // ramp up from 0 to 1 in first 35%
+          } else if (t > 0.65) {
+            envelope = (1 - t) / 0.35; // ramp down from 1 to 0 in last 35%
+          } else {
+            envelope = 1.0; // full height in center 30%
+          }
+          // Apply smooth easing to the envelope
+          envelope = envelope * envelope * (3 - 2 * envelope);
+
           const target = Math.floor(Math.random() * 8) + 2;
           const old = prev[i] ?? 0;
           const raw = Math.round(old + (target - old) * 0.4);
           heights.push(Math.round(raw * envelope));
-        } else {
-          heights.push(0);
         }
-      }
-      this.vizHeights.set(heights);
-    }, 180);
+        this.vizHeights.set(heights);
+      }, 180);
+    });
   }
 
   trackCellById(index: number, item: CollageCell): number {
     return item.id;
+  }
+
+  trackByQueueItem(index: number, item: TrackRecord): any {
+    return item.id || item.filePath || index;
   }
 
   playQueueItem(track: TrackRecord, index: number) {
@@ -269,13 +284,13 @@ export class NowPlayingComponent implements OnInit, OnDestroy {
 
   async toggleHeart(track: TrackRecord) {
     if (track.id) {
-      const currentVal = track.heart;
-      const nextVal = currentVal === 1 ? 0 : 1;
-      await this.db.toggleHeart(track.id, currentVal);
-      await this.libraryService.loadLibrary();
-      const refreshed = await this.db.getTrackById(track.id);
-      if (refreshed) {
-        this.audioService.currentTrack.set(refreshed);
+      await this.libraryService.toggleTrackHeart(track.id, track.heart);
+      const current = this.audioService.currentTrack();
+      if (current && current.id === track.id) {
+        this.audioService.currentTrack.set({
+          ...current,
+          heart: current.heart === 1 ? 0 : 1
+        });
       }
     }
   }

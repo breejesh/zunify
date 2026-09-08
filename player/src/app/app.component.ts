@@ -1,4 +1,4 @@
-import { Component, computed, effect } from '@angular/core';
+import { Component, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsService, ZunifyView } from './services/settings.service';
@@ -30,7 +30,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AlbumArtComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'Zunify';
@@ -250,14 +251,11 @@ export class AppComponent {
   async toggleCurrentTrackHeart(track: any, event: Event) {
     event.stopPropagation();
     if (track.id) {
-      const newHeart = track.heart === 1 ? 0 : 1;
-      await this.db.toggleHeart(track.id, track.heart);
-      await this.libraryService.loadLibrary();
-      
-      const updated = await this.db.getTrackById(track.id);
-      if (updated) {
-        this.audioService.currentTrack.set(updated);
-      }
+      await this.libraryService.toggleTrackHeart(track.id, track.heart);
+      this.audioService.currentTrack.set({
+        ...track,
+        heart: track.heart === 1 ? 0 : 1
+      });
     }
   }
 }

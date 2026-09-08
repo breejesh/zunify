@@ -105,11 +105,9 @@ console.log(`Built multi-resolution .ico: ${icoBuffer.length} bytes`);
 const rootDir = path.resolve(__dirname, '..');
 const playerBuildDir = path.join(rootDir, 'player/build');
 const playerPublicDir = path.join(rootDir, 'player/public');
-const playerIconsDir = path.join(rootDir, 'player/public/icons');
 
 fs.mkdirSync(playerBuildDir, { recursive: true });
 fs.mkdirSync(playerPublicDir, { recursive: true });
-fs.mkdirSync(playerIconsDir, { recursive: true });
 
 // Desktop build icons
 fs.writeFileSync(path.join(playerBuildDir, 'icon.ico'), icoBuffer);
@@ -119,12 +117,6 @@ fs.writeFileSync(path.join(playerBuildDir, 'icon.png'), pngBuffers[512]);
 fs.writeFileSync(path.join(playerPublicDir, 'favicon.ico'), icoBuffer);
 fs.writeFileSync(path.join(playerPublicDir, 'icon.ico'), icoBuffer);
 fs.writeFileSync(path.join(playerPublicDir, 'icon.png'), pngBuffers[512]);
-
-// PWA icons
-const pwaSizes = [72, 96, 128, 144, 152, 192, 384, 512];
-for (const s of pwaSizes) {
-  fs.writeFileSync(path.join(playerIconsDir, `icon-${s}x${s}.png`), pngBuffers[s]);
-}
 
 // Cleanup
 fs.rmSync(TEMP_DIR, { recursive: true, force: true });

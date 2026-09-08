@@ -168,6 +168,24 @@ export class LibraryService {
     await this.loadLibrary();
   }
 
+  // In-place track favoriting (0ms latency, no full library reload)
+  async toggleTrackHeart(trackId: number, currentHeart: number): Promise<number> {
+    const nextHeart = currentHeart === 1 ? 0 : 1;
+    await this.db.toggleHeart(trackId, currentHeart);
+
+    // Update in-memory tracks signal in-place
+    this.tracks.update(list =>
+      list.map(t => t.id === trackId ? { ...t, heart: nextHeart } : t)
+    );
+
+    // Update in-memory history signal in-place if present
+    this.history.update(list =>
+      list.map(t => t.id === trackId ? { ...t, heart: nextHeart } : t)
+    );
+
+    return nextHeart;
+  }
+
   // Verify/Request directory handle permissions
   async verifyPermission(handle: any, withWrite = false): Promise<boolean> {
     const opts = {
