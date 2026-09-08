@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zunify Desktop | The Nostalgic Zune Music Player Reborn</title>
+  <meta name="description" content="A lightweight, 100% offline, privacy-first desktop music player inspired by the iconic Microsoft Zune Metro interface. Cross-platform for Windows, macOS, and Linux.">
+  <meta name="keywords" content="Zunify, Zune Player, Desktop Music Player, Offline Player, FLAC, MP3, Windows, macOS, Linux, Retro Zune, Metro UI">
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" type="image/svg+xml" href="doc-images/logo.svg">
+
+  <!-- Open Graph & Social -->
+  <meta property="og:title" content="Zunify Desktop | Nostalgia Reimagined">
+  <meta property="og:description" content="Bring back the late-2000s Zune Metro UI to your desktop. 100% offline, zero tracking, lossless audio player.">
+  <meta property="og:image" content="doc-images/logo.svg">
+  <meta property="og:type" content="website">
+
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme-accent="magenta">
+
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-glow glow-top"></div>
+  <div class="ambient-glow glow-center"></div>
+  <div class="ambient-glow glow-bottom"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="#" class="brand-badge">
+        <div class="brand-logo-circle">
+          <span class="brand-letter">Z</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">ZUNIFY</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#demo" class="nav-link">Live Player Demo</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#gallery" class="nav-link">Visual Tour</a>
+        <a href="#specs" class="nav-link">Specs</a>
+        <a href="#downloads" class="nav-link">Downloads</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#downloads" id="header-download-btn" class="btn btn-sm btn-primary download-nav-btn">
+          <span id="header-os-icon">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          </span>
+          <span id="header-download-text">Download App</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Epic Centerpiece Hero Section -->
+  <section class="hero-section-epic">
+    <!-- Interactive Musical Stardust & Audio Note Trail Canvas -->
+    <canvas id="hero-sound-canvas" class="hero-sound-canvas"></canvas>
+
+    <div class="container hero-center-container">
+
+      <!-- Centerpiece Art & Music Sculpture -->
+      <div class="sonic-art-sculpture">
+        <!-- Subtle Alive Atmospheric Aura -->
+        <div class="acoustic-aura-bloom"></div>
+
+        <!-- Gentle Expanding Soundwave Ripples -->
+        <div class="acoustic-shockwave wave-1"></div>
+        <div class="acoustic-shockwave wave-2"></div>
+        <div class="acoustic-shockwave wave-3"></div>
+
+        <!-- Expanded Concentric Celestial Soundwave Rings -->
+        <div class="orbital-ring ring-4"></div>
+        <div class="orbital-ring ring-3"></div>
+        <div class="orbital-ring ring-2"></div>
+        <div class="orbital-ring ring-1"></div>
+
+        <!-- Glowing Vinyl Sound Disc -->
+        <div class="vinyl-sound-disc">
+          <div class="vinyl-groove groove-1"></div>
+          <div class="vinyl-groove groove-2"></div>
+          <div class="vinyl-groove groove-3"></div>
+          <div class="vinyl-light-sheen"></div>
+          
+          <!-- Center Emblem Core -->
+          <div class="vinyl-core">
+            <div class="core-logo-badge">
+              <svg viewBox="0 0 100 100" width="62" height="62" fill="none">
+                <path d="M22 22 H78 V34 L40 66 H78 V78 H22 V66 L60 34 H22 Z" fill="#FFFFFF"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monumental Typography -->
+      <div class="hero-typography">
+        <h1 class="monumental-title">ZUNIFY</h1>
+        <p class="hero-tagline">
+          Bring back the soul of your local music collection.
+        </p>
+        <p class="hero-subtext">
+          A lightning-fast, privacy-first desktop music player inspired by the iconic late-2000s Microsoft Zune Metro design. 
+          Scan your folders in seconds, experience ambient dynamic album bloom, and play your music with zero tracking.
+        </p>
+      </div>
+
+      <!-- Dynamic Center Download Hub -->
+      <div class="hero-download-hub">
+        <div class="primary-download-wrapper center-wrapper">
+          <a href="#downloads" id="hero-download-btn" class="btn btn-lg btn-primary hero-main-btn">
+            <div class="btn-icon-wrapper" id="hero-os-icon">
+              <!-- Default Windows Icon -->
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.902-1.801"/></svg>
+            </div>
+            <div class="btn-text-content">
+              <span class="btn-label" id="hero-download-title">Download for Windows</span>
+              <span class="btn-meta" id="hero-download-meta">v1.0.0 • 64-bit Installer (.exe) • Windows 10/11</span>
+            </div>
+          </a>
+
+          <button id="open-platform-modal" class="btn btn-secondary platform-select-btn" title="View other operating systems">
+            <span>Other OS</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="hero-secondary-links center-links">
+          <a href="#demo" class="secondary-link">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            <span>Launch Live Browser Demo</span>
+          </a>
+          <span class="divider">•</span>
+          <a href="https://github.com/breejesh/zunify" target="_blank" rel="noopener noreferrer" class="secondary-link">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Open Source on GitHub</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Real Zunify Browser Demo Section -->
+  <section id="demo" class="real-demo-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-subtitle">LIVE ON-DEVICE DEMO</span>
+        <h2 class="section-title">Test Drive the Real Zunify App</h2>
+        <p class="section-desc">
+          This is the authentic Zunify Angular application running live directly in your browser. 
+          Authorize any folder on your computer to scan your local music collection, explore your library, 
+          and experience the signature immersive Now Playing mode right now.
+        </p>
+      </div>
+
+      <!-- Real App Container Bezel -->
+      <div class="real-player-window glass-panel">
+        <!-- Bezel Titlebar -->
+        <div class="player-window-bar">
+          <div class="bar-left">
+            <div class="window-dot red"></div>
+            <div class="window-dot yellow"></div>
+            <div class="window-dot green"></div>
+            <span class="window-title-tag">Zunify Web Player • Live On-Device Sandbox</span>
+          </div>
+        </div>
+
+        <!-- Embedded Real Application Frame -->
+        <div class="player-iframe-container">
+          <iframe 
+            src="/demo/?t=realmusic" 
+            class="real-zunify-iframe" 
+            title="Real Zunify Music Player Demo" 
+            loading="lazy" 
+            allow="autoplay">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Demo CTA Card -->
+      <div class="demo-cta-box glass-card text-center">
+        <h3>Want the native desktop app with global keyboard media keys?</h3>
+        <p>Download Zunify Desktop for a frameless edge-to-edge window, low RAM consumption, and zero browser overhead.</p>
+        <a href="#downloads" class="btn btn-primary btn-md">
+          <span>Get Zunify Desktop</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features / Why Zunify -->
+  <section id="features" class="features-section container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">WHY ZUNIFY?</span>
+      <h2 class="section-title">Built for Your Music, Not Cloud Subscriptions</h2>
+      <p class="section-desc">
+        Modern streaming players are bloated with paywalls, tracking telemetry, and social feeds. 
+        Zunify returns to the pure joy of personal digital music collections.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card glass-card">
+        <div class="feature-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 class="feature-title">100% Offline & Zero Telemetry</h3>
+        <p class="feature-text">
+          Zero accounts, zero trackers, zero server uploads. Your music files and listening statistics 
+          remain strictly on your machine.
+        </p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card glass-card">
+        <div class="feature-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        </div>
+        <h3 class="feature-title">Iconic Zune "Metro" Aesthetics</h3>
+        <p class="feature-text">
+          A faithful tribute to Microsoft's beloved late-2000s Zune software. 
+          Minimalist typography hierarchy, bold high contrast, and fluid horizontal pivot navigation.
+        </p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card glass-card">
+        <div class="feature-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3 class="feature-title">Dynamic Ambient Color Bloom</h3>
+        <p class="feature-text">
+          The fullscreen Now Playing screen dynamically extracts color palettes from your album artwork, 
+          projecting atmospheric ambient backdrops that morph with each song.
+        </p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card glass-card">
+        <div class="feature-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <h3 class="feature-title">High-Fidelity Lossless Audio</h3>
+        <p class="feature-text">
+          Crisp playback for FLAC, MP3, WAV, M4A, AAC, and OGG formats with fast local metadata parsing 
+          and cover art extraction on-the-fly.
+        </p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card glass-card">
+        <div class="feature-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3 class="feature-title">Native Desktop Performance</h3>
+        <p class="feature-text">
+          Frameless window with custom Zune window controls, low RAM and CPU usage, 
+          and global keyboard media keys (Play/Pause, Next, Prev).
+        </p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-card glass-card">
+        <div class="feature-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3 class="feature-title">Heart Favorites & Playlists</h3>
+        <p class="feature-text">
+          Zune's beloved heart rating system lets you quickly favorite tracks, customize your Quickplay hub, 
+          and craft offline playlists.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screenshot Gallery Tour -->
+  <section id="gallery" class="gallery-section container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">VISUAL TOUR</span>
+      <h2 class="section-title">A Closer Look at the UI</h2>
+      <p class="section-desc">Meticulously crafted to honour Microsoft's iconic design language.</p>
+    </div>
+
+    <!-- Gallery Tabs -->
+    <div class="gallery-tabs">
+      <button class="gallery-tab-btn active" data-img="doc-images/home.png" data-desc="Quickplay Hub: Fast access to your history, favorites, and new arrivals.">Home / Quickplay</button>
+      <button class="gallery-tab-btn" data-img="doc-images/collection.png" data-desc="Collection View: Browse your offline library by artists, albums, or tracks.">Collection</button>
+      <button class="gallery-tab-btn" data-img="doc-images/now-playing-1.png" data-desc="Now Playing: Typography-driven immersive playback visualization.">Now Playing</button>
+      <button class="gallery-tab-btn" data-img="doc-images/now-playing-2.png" data-desc="Dynamic Accents: Smooth ambient bloom matching album colors.">Accent Glow</button>
+      <button class="gallery-tab-btn" data-img="doc-images/settings.png" data-desc="Settings: Switch between Original, Dark, or Light themes with 6 color accents.">Settings</button>
+    </div>
+
+    <!-- Gallery Display Frame -->
+    <div class="gallery-display glass-card">
+      <img src="doc-images/home.png" alt="Zunify Screen Showcase" id="gallery-main-img" class="gallery-img">
+      <div class="gallery-caption" id="gallery-caption">
+        Quickplay Hub: Fast access to your history, favorites, and new arrivals.
+      </div>
+    </div>
+  </section>
+
+  <!-- Specs & Cross-Platform Details -->
+  <section id="specs" class="specs-section container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">SPECIFICATIONS</span>
+      <h2 class="section-title">Built Clean. Runs Everywhere.</h2>
+      <p class="section-desc">Packaged natively for Windows, macOS, and Linux with modern web standards.</p>
+    </div>
+
+    <div class="specs-grid">
+      <div class="spec-card glass-card">
+        <h3>Supported Codecs</h3>
+        <ul class="spec-list">
+          <li><span>FLAC</span> <span>Lossless 16/24-bit</span></li>
+          <li><span>MP3</span> <span>Up to 320 kbps VBR/CBR</span></li>
+          <li><span>WAV / AIFF</span> <span>Uncompressed PCM</span></li>
+          <li><span>M4A / AAC</span> <span>Apple Audio standard</span></li>
+          <li><span>OGG Vorbis</span> <span>Open Audio format</span></li>
+        </ul>
+      </div>
+
+      <div class="spec-card glass-card">
+        <h3>System Requirements</h3>
+        <ul class="spec-list">
+          <li><span>Windows</span> <span>Windows 10 / 11 (64-bit)</span></li>
+          <li><span>macOS</span> <span>macOS 11+ (Apple Silicon & Intel)</span></li>
+          <li><span>Linux</span> <span>Ubuntu, Fedora, Arch Linux</span></li>
+          <li><span>RAM</span> <span>Minimal (~180MB baseline)</span></li>
+          <li><span>Disk Space</span> <span>~250MB for installation</span></li>
+        </ul>
+      </div>
+
+      <div class="spec-card glass-card">
+        <h3>Architecture & Privacy</h3>
+        <ul class="spec-list">
+          <li><span>Core Framework</span> <span>Electron + Angular 19</span></li>
+          <li><span>Database</span> <span>Dexie.js / IndexedDB</span></li>
+          <li><span>Metadata Engine</span> <span>music-metadata</span></li>
+          <li><span>Cloud Telemetry</span> <span>None (Zero calls)</span></li>
+          <li><span>License</span> <span>MIT Open Source</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Downloads Section -->
+  <section id="downloads" class="downloads-section container">
+    <div class="section-header text-center">
+      <span class="section-subtitle">DOWNLOADS</span>
+      <h2 class="section-title">Get Zunify Desktop</h2>
+      <p class="section-desc">Download the latest release (v1.0.0) for your operating system.</p>
+    </div>
+
+    <div class="downloads-grid">
+      <!-- Windows Card -->
+      <div class="download-card glass-card" id="card-windows">
+        <div class="os-header">
+          <div class="os-icon win">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.902-1.801"/></svg>
+          </div>
+          <div>
+            <h3 class="os-name">Windows</h3>
+            <span class="os-compat">Windows 10 / 11 (64-bit)</span>
+          </div>
+        </div>
+
+        <p class="os-desc">Native Windows desktop application with custom frameless titlebar and global media shortcuts.</p>
+
+        <div class="os-download-actions">
+          <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-Setup-1.0.0.exe" class="btn btn-primary btn-full download-file-link" data-filename="Zunify-Setup-1.0.0.exe">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            <span>Installer (.exe)</span>
+          </a>
+          <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-Portable-1.0.0.exe" class="btn btn-secondary btn-full download-file-link" data-filename="Zunify-Portable-1.0.0.exe">
+            <span>Portable Standalone (.exe)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- macOS Card -->
+      <div class="download-card glass-card" id="card-mac">
+        <div class="os-header">
+          <div class="os-icon mac">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 1.01-2.87-.96.04-2.1.64-2.76 1.41-.57.65-1.07 1.7-1 2.76 1.07.08 2.14-.55 2.75-1.3z"/></svg>
+          </div>
+          <div>
+            <h3 class="os-name">macOS</h3>
+            <span class="os-compat">macOS 11+ (Apple Silicon & Intel)</span>
+          </div>
+        </div>
+
+        <p class="os-desc">Seamless macOS build with native dock integration, dark mode support, and media controls.</p>
+
+        <div class="os-download-actions">
+          <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-1.0.0-arm64.dmg" class="btn btn-primary btn-full download-file-link" data-filename="Zunify-1.0.0-arm64.dmg">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            <span>Apple Silicon (.dmg)</span>
+          </a>
+          <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-1.0.0-x64.dmg" class="btn btn-secondary btn-full download-file-link" data-filename="Zunify-1.0.0-x64.dmg">
+            <span>Intel Mac (.dmg)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Linux Card -->
+      <div class="download-card glass-card" id="card-linux">
+        <div class="os-header">
+          <div class="os-icon linux">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12.001 0C8.135 0 5.484 2.812 5.484 6.875c0 1.258.267 2.664.73 3.914-.54 1.34-1.066 3.125-1.066 4.71 0 3.738 2.505 5.501 5.043 5.501.272 0 .54-.025.807-.075.768 1.83 2.196 3.075 4.002 3.075 1.805 0 3.234-1.245 4.002-3.075.267.05.535.075.807.075 2.538 0 5.043-1.763 5.043-5.5 0-1.586-.525-3.371-1.065-4.711.463-1.25.73-2.656.73-3.914C24.517 2.812 21.866 0 18 0c-2.316 0-4.316 1.054-5.999 2.766C10.317 1.054 8.317 0 5.999 0h6.002z"/></svg>
+          </div>
+          <div>
+            <h3 class="os-name">Linux</h3>
+            <span class="os-compat">Universal AppImage & Debian</span>
+          </div>
+        </div>
+
+        <p class="os-desc">Run out-of-the-box on Ubuntu, Debian, Fedora, Arch, and more without extra dependencies.</p>
+
+        <div class="os-download-actions">
+          <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-1.0.0.AppImage" class="btn btn-primary btn-full download-file-link" data-filename="Zunify-1.0.0.AppImage">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            <span>AppImage (x86_64)</span>
+          </a>
+          <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/zunify_1.0.0_amd64.deb" class="btn btn-secondary btn-full download-file-link" data-filename="zunify_1.0.0_amd64.deb">
+            <span>Debian / Ubuntu (.deb)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Selection Modal -->
+  <div class="modal-backdrop" id="platform-modal">
+    <div class="modal-box glass-card">
+      <div class="modal-header">
+        <h3>Choose your platform</h3>
+        <button class="modal-close" id="close-platform-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-platform-group">
+          <h4>Windows</h4>
+          <div class="modal-btn-row">
+            <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-Setup-1.0.0.exe" class="modal-dl-link">Windows Installer (.exe)</a>
+            <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-Portable-1.0.0.exe" class="modal-dl-link">Portable Standalone (.exe)</a>
+          </div>
+        </div>
+        <div class="modal-platform-group">
+          <h4>macOS</h4>
+          <div class="modal-btn-row">
+            <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-1.0.0-arm64.dmg" class="modal-dl-link">Apple Silicon (.dmg)</a>
+            <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-1.0.0-x64.dmg" class="modal-dl-link">Intel (.dmg)</a>
+          </div>
+        </div>
+        <div class="modal-platform-group">
+          <h4>Linux</h4>
+          <div class="modal-btn-row">
+            <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/Zunify-1.0.0.AppImage" class="modal-dl-link">Universal AppImage</a>
+            <a href="https://github.com/breejesh/zunify/releases/download/v1.0.0/zunify_1.0.0_amd64.deb" class="modal-dl-link">Debian / Ubuntu (.deb)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download Started Toast -->
+  <div class="download-toast" id="download-toast">
+    <div class="toast-icon">✓</div>
+    <div class="toast-content">
+      <span class="toast-title">Starting download...</span>
+      <span class="toast-file" id="toast-filename">Zunify-Setup-1.0.0.exe</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="brand-circle">
+          <svg viewBox="0 0 128 128" width="16" height="16" fill="none">
+            <path d="M41 40 H87 V50 H60 L87 79 V89 H41 V79 H68 L41 50 Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <span>ZUNIFY DESKTOP</span>
+      </div>
+
+      <p class="footer-text">
+        Inspired by the groundbreaking Microsoft Zune design heritage. Free & Open-Source under the MIT License.
+      </p>
+
+      <div class="footer-links">
+        <a href="https://github.com/breejesh/zunify" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="#demo">Live Demo</a>
+        <a href="#downloads">Releases</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,4 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="14" fill="none" stroke="#e5007d" stroke-width="1.5" />
-  <text x="16" y="21.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="300" font-size="16" fill="#e5007d" text-anchor="middle">Z</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="zunifyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A8C" />
+      <stop offset="50%" stop-color="#E5007D" />
+      <stop offset="100%" stop-color="#B80060" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#E5007D" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  <!-- Filled circle disc -->
+  <circle cx="64" cy="64" r="56" fill="url(#zunifyGrad)" filter="url(#glow)"/>
+  <circle cx="64" cy="64" r="54" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2" fill="none"/>
+  <!-- Bold geometric Z -->
+  <path d="M40 39 H88 V51 L57 77 H88 V89 H40 V77 L71 51 H40 Z" fill="#FFFFFF"/>
 </svg>

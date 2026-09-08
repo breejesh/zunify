@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/zunify/browser",
+    "public": "website",
     "ignore": [
       "firebase.json",
       "**/.*",
