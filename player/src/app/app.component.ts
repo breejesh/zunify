@@ -1,4 +1,4 @@
-import { Component, computed, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, effect, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsService, ZunifyView } from './services/settings.service';
@@ -42,12 +42,15 @@ export class AppComponent {
 
   // Desktop & Electron properties
   isElectron = false;
-  isMaximized = false;
+  isMac = false;
+  // Signal because maximize events arrive over IPC, outside Angular's zone
+  isMaximized = signal(false);
 
-  // PWA Install properties
-  deferredPrompt: any = null;
-  isInstallable = false;
-  isStandalone = false;
+  // Web demo framed inside the product website, which already has its own download CTAs
+  isEmbedded = false;
+
+  // Where the web demo sends visitors who want the real desktop app
+  readonly downloadUrl = 'https://zunify-84327.web.app/#downloads';
 
   // volume getter/setter helpers for HTML template bindings
   currentVolume = computed(() => this.audioService.volume());
@@ -86,10 +89,17 @@ export class AppComponent {
     // Detect Electron & Desktop environment
     if (typeof window !== 'undefined') {
       const electron = (window as any).electronAPI;
+      try {
+        this.isEmbedded = window.self !== window.top;
+      } catch {
+        this.isEmbedded = true;
+      }
+
       if (electron?.isElectron) {
         this.isElectron = true;
-        electron.isMaximized?.().then((max: boolean) => this.isMaximized = max);
-        electron.onMaximizeChange?.((max: boolean) => this.isMaximized = max);
+        this.isMac = electron.platform === 'darwin';
+        electron.isMaximized?.().then((max: boolean) => this.isMaximized.set(max));
+        electron.onMaximizeChange?.((max: boolean) => this.isMaximized.set(max));
         electron.onMediaKey?.((action: string) => {
           if (action === 'play-pause') {
             this.audioService.togglePlay();
@@ -100,22 +110,6 @@ export class AppComponent {
           }
         });
       }
-
-      // Detect standalone mode
-      this.isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-
-      // Listen for PWA installation prompt
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        this.deferredPrompt = e;
-        this.isInstallable = true;
-      });
-
-      window.addEventListener('appinstalled', () => {
-        this.isInstallable = false;
-        this.deferredPrompt = null;
-        this.isStandalone = true;
-      });
     }
   }
 
@@ -132,9 +126,16 @@ export class AppComponent {
   }
 
   updateSeoForView(view: string) {
-    let title = 'Retro Zune Offline PWA Music Player';
-    let description = 'An offline-first music player PWA built in Angular, recreating the classic Zune Desktop App Metro user interface. Scan local directories and play lossless audio.';
-    let keywords = 'Zune, Music Player, Offline Player, PWA, Angular, Retro Zune, Audio Player';
+    // The desktop window title shows in the taskbar/dock: keep it short, no SEO copy
+    if (this.isElectron) {
+      const track = this.currentTrack();
+      document.title = track ? `${track.title} - ${track.artist} | Zunify` : 'Zunify';
+      return;
+    }
+
+    let title = 'Retro Zune Desktop Music Player - Live Demo';
+    let description = 'Try Zunify in your browser: an offline-first desktop music player for Windows, macOS and Linux that recreates the classic Zune Metro interface.';
+    let keywords = 'Zune, Music Player, Offline Player, Desktop Music Player, Electron, Retro Zune, Audio Player';
 
     if (view === 'collection') {
       title = 'My Collection - Offline Music Library';
@@ -165,9 +166,8 @@ export class AppComponent {
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
       'name': 'Zunify',
-      'operatingSystem': 'Web, Windows, macOS, Linux, Android, iOS',
+      'operatingSystem': 'Windows, macOS, Linux',
       'applicationCategory': 'MultimediaApplication',
-      'browserRequirements': 'Requires HTML5 audio capabilities and File System Access API support',
       'description': description,
       'offers': {
         '@type': 'Offer',
@@ -181,19 +181,6 @@ export class AppComponent {
       }
     };
     this.seoService.injectSchema(schema);
-  }
-
-  installPWA() {
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-      this.deferredPrompt.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('Zunify installed successfully');
-        }
-        this.deferredPrompt = null;
-        this.isInstallable = false;
-      });
-    }
   }
 
   changeView(view: ZunifyView) {

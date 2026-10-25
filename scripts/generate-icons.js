@@ -3,23 +3,24 @@ const path = require('path');
 const cp = require('child_process');
 
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const HTML_TEMPLATE = path.resolve(__dirname, '../icon-render.html');
-const TEMP_DIR = path.resolve(__dirname, '../scratch-icons');
+const ROOT_DIR = path.resolve(__dirname, '..');
+const SVG_PATH = path.join(ROOT_DIR, 'doc-images/logo.svg');
+const TEMP_DIR = path.join(ROOT_DIR, 'scratch-icons');
 
 if (!fs.existsSync(TEMP_DIR)) {
   fs.mkdirSync(TEMP_DIR, { recursive: true });
 }
 
-// 1. Render 512x512 Master PNG
+// 1. Render 512x512 Master PNG directly from doc-images/logo.svg
 const masterPng = path.join(TEMP_DIR, 'icon-512.png');
-console.log('Rendering 512x512 master PNG from icon-render.html...');
+console.log('Rendering 512x512 master PNG from doc-images/logo.svg...');
 
 cp.execFileSync(CHROME_PATH, [
   '--headless=new',
   '--default-background-color=00000000',
   '--window-size=512,512',
   `--screenshot=${masterPng}`,
-  `file:///${HTML_TEMPLATE.replace(/\\/g, '/')}`
+  `file:///${SVG_PATH.replace(/\\/g, '/')}`
 ]);
 
 if (!fs.existsSync(masterPng) || fs.statSync(masterPng).size === 0) {
@@ -28,7 +29,25 @@ if (!fs.existsSync(masterPng) || fs.statSync(masterPng).size === 0) {
 
 console.log(`Master PNG rendered: ${fs.statSync(masterPng).size} bytes`);
 
-// 2. High-quality Bicubic Resizing using .NET System.Drawing
+// 2. Generate multi-resolution Windows executable .ico using png2icons (BMP for <=48, PNG for >=64)
+const icoBase = path.join(TEMP_DIR, 'icon');
+const targetIco = path.join(TEMP_DIR, 'icon.ico');
+
+console.log('Generating Windows executable-compliant multi-resolution .ico...');
+cp.execFileSync('npx', ['-y', 'png2icons', `"${masterPng}"`, `"${icoBase}"`, '-icowe', '-bc', '-i'], {
+  shell: true
+});
+
+if (!fs.existsSync(targetIco) || fs.statSync(targetIco).size === 0) {
+  throw new Error('Failed to generate compliant .ico file');
+}
+
+console.log(`Compliant Windows .ico generated: ${fs.statSync(targetIco).size} bytes`);
+
+const icoBuffer = fs.readFileSync(targetIco);
+const masterPngBuffer = fs.readFileSync(masterPng);
+
+// 3. High-quality Bicubic Resizing using .NET System.Drawing for PWA icons
 function resizeWithNet(srcPath, width, height, destPath) {
   const psCmd = `
     Add-Type -AssemblyName System.Drawing;
@@ -51,7 +70,7 @@ function resizeWithNet(srcPath, width, height, destPath) {
 
 const allSizes = [16, 32, 48, 64, 72, 96, 128, 144, 152, 192, 256, 384];
 const pngBuffers = {
-  512: fs.readFileSync(masterPng)
+  512: masterPngBuffer
 };
 
 for (const s of allSizes) {
@@ -61,67 +80,30 @@ for (const s of allSizes) {
   console.log(`Resized to ${s}x${s}: ${pngBuffers[s].length} bytes`);
 }
 
-// 3. Build standard Windows .ico binary with [256, 128, 64, 48, 32, 16]
-function createIco(sizes, buffers) {
-  const count = sizes.length;
-  const headerSize = 6;
-  const dirEntrySize = 16;
-  const dataOffset = headerSize + count * dirEntrySize;
-
-  let currentOffset = dataOffset;
-  const entries = [];
-  const imageBuffers = [];
-
-  for (const size of sizes) {
-    const buf = buffers[size];
-    imageBuffers.push(buf);
-
-    const entry = Buffer.alloc(16);
-    entry.writeUInt8(size >= 256 ? 0 : size, 0); // Width (0 = 256)
-    entry.writeUInt8(size >= 256 ? 0 : size, 1); // Height (0 = 256)
-    entry.writeUInt8(0, 2); // Palette
-    entry.writeUInt8(0, 3); // Reserved
-    entry.writeUInt16LE(1, 4); // Color planes
-    entry.writeUInt16LE(32, 6); // Bits per pixel
-    entry.writeUInt32LE(buf.length, 8); // Image size in bytes
-    entry.writeUInt32LE(currentOffset, 12); // File offset
-
-    entries.push(entry);
-    currentOffset += buf.length;
-  }
-
-  const header = Buffer.alloc(6);
-  header.writeUInt16LE(0, 0); // Reserved
-  header.writeUInt16LE(1, 2); // 1 = ICO type
-  header.writeUInt16LE(count, 4); // Number of images
-
-  return Buffer.concat([header, ...entries, ...imageBuffers]);
-}
-
-const icoBuffer = createIco([256, 128, 64, 48, 32, 16], pngBuffers);
-console.log(`Built multi-resolution .ico: ${icoBuffer.length} bytes`);
-
 // 4. Output Directories
-const rootDir = path.resolve(__dirname, '..');
-const playerBuildDir = path.join(rootDir, 'player/build');
-const playerPublicDir = path.join(rootDir, 'player/public');
+const playerBuildDir = path.join(ROOT_DIR, 'player/build');
+const playerPublicDir = path.join(ROOT_DIR, 'player/public');
+const websiteDemoDir = path.join(ROOT_DIR, 'website/demo');
 
 fs.mkdirSync(playerBuildDir, { recursive: true });
 fs.mkdirSync(playerPublicDir, { recursive: true });
+fs.mkdirSync(websiteDemoDir, { recursive: true });
 
 // Desktop build icons
 fs.writeFileSync(path.join(playerBuildDir, 'icon.ico'), icoBuffer);
-fs.writeFileSync(path.join(playerBuildDir, 'icon.png'), pngBuffers[512]);
+fs.writeFileSync(path.join(playerBuildDir, 'icon.png'), masterPngBuffer);
 
-// Public runtime icons
+// Public runtime icons for Player
 fs.writeFileSync(path.join(playerPublicDir, 'favicon.ico'), icoBuffer);
 fs.writeFileSync(path.join(playerPublicDir, 'icon.ico'), icoBuffer);
-fs.writeFileSync(path.join(playerPublicDir, 'icon.png'), pngBuffers[512]);
+fs.writeFileSync(path.join(playerPublicDir, 'icon.png'), masterPngBuffer);
 
-// Cleanup
+// Demo site icons
+fs.writeFileSync(path.join(websiteDemoDir, 'favicon.ico'), icoBuffer);
+fs.writeFileSync(path.join(websiteDemoDir, 'icon.ico'), icoBuffer);
+fs.writeFileSync(path.join(websiteDemoDir, 'icon.png'), masterPngBuffer);
+
+// Cleanup temporary scratch files
 fs.rmSync(TEMP_DIR, { recursive: true, force: true });
-if (fs.existsSync(HTML_TEMPLATE)) {
-  fs.unlinkSync(HTML_TEMPLATE);
-}
 
 console.log('ALL ICONS SUCCESSFULLY GENERATED AND PLACED!');

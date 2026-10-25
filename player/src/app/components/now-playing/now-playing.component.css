@@ -73,6 +73,10 @@
   transition: all 0.2s ease;
 }
 
+:host-context(.platform-mac) .back-btn {
+  left: 96px;
+}
+
 .back-btn:hover {
   transform: scale(1.08);
   border-color: var(--accent-color);
