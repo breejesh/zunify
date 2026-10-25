@@ -1,22 +1,45 @@
-name: Build Desktop Release
+name: Desktop Build & Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [main]
+    tags: ['v*']
+    paths-ignore:
+      - 'website/**'
+      - 'doc-images/**'
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - 'website/**'
+      - 'doc-images/**'
+      - '**.md'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
 jobs:
-  release:
-    name: Build (${{ matrix.os }})
+  build:
+    name: Build (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - name: windows
+            os: windows-latest
+          - name: macos
+            os: macos-latest
+          - name: linux
+            os: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: player
 
     steps:
       - name: Check out repository
@@ -25,25 +48,75 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 22
+          cache: npm
           cache-dependency-path: player/package-lock.json
 
-      - name: Install Linux system dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libarchive-tools libfuse2
+      - name: Use tag as app version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
 
-      - name: Install player dependencies
-        run: |
-          cd player
-          npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build and Package Desktop App
+      - name: Build Angular renderer
+        run: npm run build
+
+      - name: Package desktop app
+        shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd player
-          npm run build
-          npx electron-builder --publish always
+          # No signing certificates in CI: build unsigned (macOS builds are ad-hoc signed)
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --publish never
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: zunify-${{ matrix.name }}
+          if-no-files-found: error
+          path: |
+            player/dist-desktop/*.exe
+            player/dist-desktop/*.dmg
+            player/dist-desktop/*.AppImage
+            player/dist-desktop/*.deb
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download installers
+        uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+
+      - name: List release files
+        run: ls -la release
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Zunify ${{ github.ref_name }}
+          files: release/*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          body: |
+            ## Downloads
+
+            | Platform | File |
+            | --- | --- |
+            | Windows 10/11 (installer) | `Zunify-Setup-x64.exe` |
+            | Windows (portable, no install) | `Zunify-Portable-x64.exe` |
+            | macOS, Apple Silicon | `Zunify-mac-arm64.dmg` |
+            | macOS, Intel | `Zunify-mac-x64.dmg` |
+            | Linux (any distro) | `Zunify-linux-x86_64.AppImage` |
+            | Debian / Ubuntu | `Zunify-linux-amd64.deb` |
+
+            **First launch notes.** The builds are not code-signed yet:
+            - **Windows:** if SmartScreen appears, click *More info* → *Run anyway*.
+            - **macOS:** if macOS says the app is damaged or from an unidentified developer, run
+              `xattr -cr /Applications/Zunify.app` once in Terminal, then open it again.
+            - **Linux AppImage:** `chmod +x Zunify-linux-x86_64.AppImage` then run it (needs `libfuse2` on Ubuntu 22.04+).

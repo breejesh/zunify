@@ -1,16 +1,17 @@
 {
   "name": "zunify-workspace",
   "version": "1.0.0",
-  "description": "Zunify Workspace: Cross-Platform Electron Desktop Music Player and Product Landing Website",
+  "description": "Zunify: offline-first, Zune-inspired desktop music player (Electron) and its product website",
   "scripts": {
     "dev:player": "cd player && npm run electron:dev",
     "dev:website": "npx -y serve website -p 3000",
     "build:player": "cd player && npm run build",
+    "build:demo": "node scripts/build-demo.js",
     "dist:desktop": "cd player && npm run dist",
     "dist:win": "cd player && npm run dist:win",
     "dist:mac": "cd player && npm run dist:mac",
     "dist:linux": "cd player && npm run dist:linux",
-    "deploy:website": "firebase deploy --only hosting"
+    "deploy:website": "npm run build:demo && firebase deploy --only hosting"
   },
   "author": "Breejesh Rathod",
   "license": "MIT"

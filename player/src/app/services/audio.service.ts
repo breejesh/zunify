@@ -127,7 +127,7 @@ export class AudioService {
   }
 
   // Load file and play
-  private async loadAndPlay(track: TrackRecord) {
+  private async loadAndPlay(track: TrackRecord, resumeAt?: number) {
     try {
       this.audio.pause();
       this.currentTrack.set(track);
@@ -150,12 +150,18 @@ export class AudioService {
       }
       
       this.audio.loop = false;
-      this.currentTime.set(0);
       this.audio.load();
+      if (resumeAt) {
+        this.audio.currentTime = resumeAt;
+        this.currentTime.set(resumeAt);
+      } else {
+        this.currentTime.set(0);
+      }
       await this.audio.play();
 
       // Update play count in db and in-memory signal without full library reload
-      if (track.id) {
+      // (resuming a restored session is not a new play)
+      if (track.id && !resumeAt) {
         await this.db.incrementPlayCount(track.id);
         this.libraryService.updateTrackPlayCount(track.id);
       }
@@ -172,9 +178,15 @@ export class AudioService {
   }
 
   play() {
-    if (this.currentTrack()) {
-      this.audio.play();
+    const track = this.currentTrack();
+    if (!track) return;
+    // A track restored from the previous session may not have its file attached yet
+    // (or it failed to load at startup), so load it now and resume where we left off.
+    if (!this.audio.src || this.audio.error) {
+      this.loadAndPlay(track, this.currentTime());
+      return;
     }
+    this.audio.play().catch(err => console.error('Error resuming playback:', err));
   }
 
   pause() {

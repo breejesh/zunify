@@ -83,9 +83,18 @@ export class LibraryService {
           allTracks = await this.db.getAllTracks();
         }
       }
+      const allFolders = await this.db.folders.toArray();
+
+      // Drop tracks whose folder no longer exists (e.g. left behind by older builds);
+      // they can never be played and would otherwise linger in the collection forever.
+      const folderIds = new Set(allFolders.map(f => f.id));
+      const orphans = allTracks.filter(t => !t.filePath.startsWith('demo:') && !folderIds.has(t.folderId));
+      if (orphans.length > 0) {
+        await this.db.tracks.bulkDelete(orphans.map(t => t.id!));
+        allTracks = allTracks.filter(t => !orphans.includes(t));
+      }
       this.tracks.set(allTracks);
 
-      const allFolders = await this.db.folders.toArray();
       // Backfill missing paths for existing folders if possible
       for (const folder of allFolders) {
         if (!folder.path && folder.handle) {

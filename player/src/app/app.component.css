@@ -109,6 +109,12 @@
   transition: all 0.2s ease;
 }
 
+.install-app-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
 .install-app-btn:hover {
   background: transparent;
   color: var(--accent-color);
@@ -1393,4 +1399,33 @@
   .progress-time {
     font-size: 0.75rem;
   }
+}
+/* macOS: leave room for the native traffic lights inside the header */
+.platform-mac .app-header {
+  padding-left: 96px;
+}
+
+/* Now Playing has no header, so the frameless window still needs a drag strip + controls */
+.np-titlebar {
+  position: absolute;
+  top: 0;
+  left: 110px;
+  right: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 14px;
+  z-index: 1000;
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.np-titlebar .window-controls {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.np-titlebar .win-btn {
+  color: rgba(255, 255, 255, 0.75);
 }
