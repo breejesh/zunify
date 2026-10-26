@@ -143,8 +143,12 @@ npm run build:demo       # Rebuild the embedded live demo from player/
 npm run deploy:website   # Rebuild the demo, then deploy to Firebase Hosting
 ```
 
-The website detects the visitor's OS for its primary download button and reads the latest
-release from the GitHub API to show the current version and file sizes.
+The website *is* a player: press play on the hero disc and a royalty-free soundtrack from the
+demo library drives everything through the Web Audio API (radial spectrum, beat-flipping album
+mosaic, drifting Zune typography, live tiles and a footer wordmark that dances). It also includes a
+Zune HD-style horizontal panorama tour and the embedded live demo. Downloads detect the visitor's
+OS and read the latest release from the GitHub API for the current version and file sizes.
+Space / ← / → and the OS media keys control the site soundtrack.
 
 ---
 

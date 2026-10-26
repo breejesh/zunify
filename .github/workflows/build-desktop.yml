@@ -7,11 +7,13 @@ on:
     paths-ignore:
       - 'website/**'
       - 'doc-images/**'
+      - 'firebase.json'
       - '**.md'
   pull_request:
     paths-ignore:
       - 'website/**'
       - 'doc-images/**'
+      - 'firebase.json'
       - '**.md'
   workflow_dispatch:
 

@@ -2,16 +2,16 @@
 <html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zunify | The Zune Music Player, Reborn for Your Desktop</title>
-  <meta name="description" content="Zunify is a free, open-source, offline-first desktop music player for Windows, macOS and Linux, inspired by the iconic Zune Metro interface. No accounts, no tracking, just your music.">
-  <meta name="keywords" content="Zunify, Zune, Zune player, desktop music player, offline music player, FLAC player, Metro UI, Windows, macOS, Linux">
-  <meta name="theme-color" content="#0a0a0b">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Zunify | The Zune Lives On. Desktop Music Player</title>
+  <meta name="description" content="Zunify is a free, open-source, offline-first desktop music player for Windows, macOS and Linux, inspired by the iconic Zune. No accounts, no streaming, no tracking. Just your music, played beautifully.">
+  <meta name="keywords" content="Zunify, Zune, Zune player, Zune HD, desktop music player, offline music player, FLAC player, Metro UI, Windows, macOS, Linux">
+  <meta name="theme-color" content="#050506">
   <link rel="canonical" href="https://zunify-84327.web.app/">
   <link rel="icon" type="image/svg+xml" href="doc-images/logo.svg">
 
-  <meta property="og:title" content="Zunify | The Zune Music Player, Reborn">
-  <meta property="og:description" content="Free, offline-first desktop music player with the soul of the Zune. Windows, macOS & Linux.">
+  <meta property="og:title" content="Zunify | The Zune Lives On">
+  <meta property="og:description" content="A free, offline-first desktop music player with the soul of the Zune. Windows, macOS & Linux.">
   <meta property="og:image" content="https://zunify-84327.web.app/doc-images/now-playing-1.png">
   <meta property="og:url" content="https://zunify-84327.web.app/">
   <meta property="og:type" content="website">
@@ -32,288 +32,308 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/covers/metro_nights.jpg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body data-accent="magenta">
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- ============ NAV ============ -->
+  <!-- ===================================================================
+       NAV
+       =================================================================== -->
   <header class="nav" id="nav">
-    <div class="wrap nav-inner">
-      <a href="#top" class="brand" aria-label="Zunify home">
-        <span class="brand-mark">z</span>
-        <span class="brand-word">zunify</span>
-      </a>
+    <a href="#top" class="brand" aria-label="Zunify, back to top">
+      <span class="brand-disc"><span>z</span></span>
+      <span class="brand-word">zunify</span>
+    </a>
 
-      <nav class="nav-links" aria-label="Sections">
-        <a href="#features">features</a>
-        <a href="#tour">tour</a>
-        <a href="#demo">demo</a>
-        <a href="#download">download</a>
-      </nav>
+    <nav class="nav-pivot" aria-label="Sections">
+      <a href="#manifesto">why</a>
+      <a href="#panorama">tour</a>
+      <a href="#tiles">features</a>
+      <a href="#demo">demo</a>
+    </nav>
 
-      <div class="nav-right">
-        <div class="accent-switch" role="radiogroup" aria-label="Accent color">
-          <button class="swatch" data-accent="magenta" aria-label="Magenta accent" role="radio"></button>
-          <button class="swatch" data-accent="orange" aria-label="Orange accent" role="radio"></button>
-          <button class="swatch" data-accent="cyan" aria-label="Cyan accent" role="radio"></button>
-          <button class="swatch" data-accent="green" aria-label="Green accent" role="radio"></button>
-          <button class="swatch" data-accent="red" aria-label="Red accent" role="radio"></button>
-          <button class="swatch" data-accent="yellow" aria-label="Yellow accent" role="radio"></button>
-        </div>
-        <a href="#download" class="btn btn-solid btn-sm js-primary-download">
-          <span class="js-os-icon" aria-hidden="true"></span>
-          <span>download</span>
-        </a>
-      </div>
-    </div>
+    <a href="#download" class="nav-cta js-primary-download">
+      <span class="js-os-icon" aria-hidden="true"></span>
+      <span>download</span>
+    </a>
   </header>
 
   <main id="top">
 
-    <!-- ============ HERO ============ -->
-    <section class="hero">
-      <div class="hero-bloom" aria-hidden="true"></div>
-      <div class="pivot-marquee" aria-hidden="true">
-        <div class="pivot-track">
-          <span>home</span><span>collection</span><span>now playing</span><span>playlists</span><span>history</span><span>settings</span>
-          <span>home</span><span>collection</span><span>now playing</span><span>playlists</span><span>history</span><span>settings</span>
-        </div>
+    <!-- ===================================================================
+         1. HERO: a living Zune "Now Playing" screen
+         =================================================================== -->
+    <section class="hero" id="hero" aria-label="Zunify">
+      <div class="mosaic" id="mosaic" aria-hidden="true"></div>
+      <div class="hero-tint" aria-hidden="true"></div>
+
+      <!-- Giant drifting type, the signature of the Zune Now Playing screen -->
+      <div class="typeart" aria-hidden="true">
+        <div class="type-row r1"><div class="type-track"><span class="js-art-artist">zune collective</span><span class="js-art-artist">zune collective</span></div></div>
+        <div class="type-row r2"><div class="type-track"><span class="js-art-title">midnight neon</span><span class="js-art-title">midnight neon</span><span class="js-art-title">midnight neon</span><span class="js-art-title">midnight neon</span></div></div>
+        <div class="type-row r3"><div class="type-track"><span class="js-art-album">metro nights</span><span class="js-art-album">metro nights</span><span class="js-art-album">metro nights</span></div></div>
+        <div class="type-row r4"><div class="type-track"><span>your music · your machine · your zune · </span><span>your music · your machine · your zune · </span></div></div>
       </div>
 
-      <div class="wrap hero-copy">
-        <p class="eyebrow reveal"><span class="dot"></span>free &amp; open source desktop app <span class="js-version-badge version-badge"></span></p>
-        <h1 class="hero-title reveal">
-          <span class="line">your music.</span>
-          <span class="line">your machine.</span>
-          <span class="line accent-text">your zune.</span>
-        </h1>
-        <p class="hero-sub reveal">
-          Zunify brings back the Zune's Metro soul: big type, bold colour, and a gorgeous
-          full-screen Now Playing. It plays the music already on your computer.
-          No accounts, no streaming, no tracking.
-        </p>
-
-        <div class="hero-ctas reveal">
-          <a href="#download" class="btn btn-solid btn-lg js-primary-download">
-            <span class="js-os-icon" aria-hidden="true"></span>
-            <span class="btn-stack">
-              <span class="js-primary-label">download zunify</span>
-              <small class="js-primary-meta">windows · macos · linux</small>
-            </span>
-          </a>
-          <a href="#demo" class="btn btn-ghost btn-lg">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            try it in your browser
-          </a>
-        </div>
-        <p class="hero-fine reveal">Windows 10/11 · macOS 11+ (Apple Silicon &amp; Intel) · Linux AppImage &amp; .deb</p>
-      </div>
-
-      <div class="wrap hero-shot-wrap">
-        <figure class="hero-shot reveal" id="hero-shot">
-          <div class="window-chrome" aria-hidden="true"><i></i><i></i><i></i></div>
-          <img src="doc-images/now-playing-1.png" width="1434" height="942"
-               alt="Zunify Now Playing screen with an animated album art mosaic, track details and a pink progress bar">
-        </figure>
-      </div>
-    </section>
-
-    <!-- ============ STATS ============ -->
-    <section class="stats" aria-label="At a glance">
-      <div class="wrap stats-grid">
-        <div class="stat reveal"><b>0</b><span>accounts, ads or trackers</span></div>
-        <div class="stat reveal"><b>6</b><span>audio formats incl. FLAC</span></div>
-        <div class="stat reveal"><b>3</b><span>platforms: win, mac, linux</span></div>
-        <div class="stat reveal"><b>100%</b><span>offline. your files stay put</span></div>
-      </div>
-    </section>
-
-    <!-- ============ FEATURES ============ -->
-    <section class="section" id="features">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="kicker">features</p>
-          <h2 class="section-title">everything you loved.<br><span class="dim">nothing you didn't.</span></h2>
-        </header>
-
-        <div class="tiles">
-          <article class="tile tile-xl tile-accent reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-            <h3>now playing, the way it should be</h3>
-            <p>A full-screen mosaic of your album art flips and shifts while the music plays, with big type and a live visualizer. Exactly the Zune moment you remember.</p>
-          </article>
-
-          <article class="tile reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <h3>private by design</h3>
-            <p>No account, no cloud, no telemetry. Your library and listening history live in a local database on your machine.</p>
-          </article>
-
-          <article class="tile reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 10v4M6 6v12M10 3v18M14 8v8M18 5v14M22 10v4"/></svg>
-            <h3>lossless ready</h3>
-            <p>FLAC, WAV, MP3, M4A, AAC and OGG, with tags and embedded cover art read straight from your files.</p>
-          </article>
-
-          <article class="tile tile-wide reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
-            <h3>the metro collection</h3>
-            <p>Browse artists, albums and songs side by side with pivot navigation, quick sorting and instant search. Point it at your music folders and it indexes everything.</p>
-          </article>
-
-          <article class="tile reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-            <h3>hearts &amp; playlists</h3>
-            <p>Favourite tracks, build and reorder playlists with drag &amp; drop, or save the play queue in one click.</p>
-          </article>
-
-          <article class="tile reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
-            <h3>truly native</h3>
-            <p>Frameless window, hardware media keys, OS media controls, and playback that keeps going when it's minimized.</p>
-          </article>
-
-          <article class="tile tile-wide tile-swatches reveal">
-            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/></svg>
-            <h3>make it yours</h3>
-            <p>Original, dark or light themes and six classic Zune accents. Try them on this page: tap a colour.</p>
-            <div class="tile-swatch-row">
-              <button class="swatch big" data-accent="magenta" aria-label="Magenta accent"></button>
-              <button class="swatch big" data-accent="orange" aria-label="Orange accent"></button>
-              <button class="swatch big" data-accent="cyan" aria-label="Cyan accent"></button>
-              <button class="swatch big" data-accent="green" aria-label="Green accent"></button>
-              <button class="swatch big" data-accent="red" aria-label="Red accent"></button>
-              <button class="swatch big" data-accent="yellow" aria-label="Yellow accent"></button>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ TOUR ============ -->
-    <section class="section tour" id="tour">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="kicker">tour</p>
-          <h2 class="section-title">a closer look</h2>
-        </header>
-
-        <div class="pivot" role="tablist" aria-label="Screens">
-          <button class="pivot-item active" role="tab" aria-selected="true" data-img="doc-images/home.png"
-            data-caption="Quickplay: new arrivals, playlists and your history, one click from playing.">home</button>
-          <button class="pivot-item" role="tab" aria-selected="false" data-img="doc-images/collection.png"
-            data-caption="Collection: artists, albums and songs in classic Metro columns.">collection</button>
-          <button class="pivot-item" role="tab" aria-selected="false" data-img="doc-images/now-playing-1.png"
-            data-caption="Now Playing: an animated mosaic of your own album art.">now playing</button>
-          <button class="pivot-item" role="tab" aria-selected="false" data-img="doc-images/now-playing-2.png"
-            data-caption="Your accent colour runs through the whole Now Playing experience.">accents</button>
-          <button class="pivot-item" role="tab" aria-selected="false" data-img="doc-images/settings.png"
-            data-caption="Settings: music folders, themes, accents and library maintenance.">settings</button>
-        </div>
-
-        <figure class="tour-frame reveal">
-          <div class="window-chrome" aria-hidden="true"><i></i><i></i><i></i></div>
-          <img id="tour-img" src="doc-images/home.png" width="1434" height="943" alt="Zunify home screen" loading="lazy">
-          <figcaption id="tour-caption">Quickplay: new arrivals, playlists and your history, one click from playing.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- ============ DEMO ============ -->
-    <section class="section" id="demo">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="kicker">live demo</p>
-          <h2 class="section-title">take it for a spin</h2>
-          <p class="section-sub">This is the real Zunify interface running in your browser with a royalty-free demo library.
-            Double-click a song, open Now Playing, change the accent in settings.</p>
-        </header>
-
-        <div class="demo-frame reveal">
-          <div class="window-chrome" aria-hidden="true"><i></i><i></i><i></i><span>zunify · browser demo</span></div>
-          <div class="demo-viewport">
-            <iframe src="demo/" title="Zunify live demo" loading="lazy" allow="autoplay"></iframe>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="kicker intro i1"><span class="live-dot"></span>free desktop music player <span class="js-version-badge ver"></span></p>
+          <h1 class="hero-title">
+            <span class="intro i2">the zune</span>
+            <span class="intro i3 zune-gradient">lives on.</span>
+          </h1>
+          <p class="hero-lede intro i4">
+            The Metro soul you remember, rebuilt for Windows, macOS &amp; Linux.
+            Zunify plays the music already on your computer. No accounts. No streaming. No tracking.
+          </p>
+          <div class="hero-ctas intro i5">
+            <a href="#download" class="btn btn-primary js-primary-download">
+              <span class="js-os-icon" aria-hidden="true"></span>
+              <span class="btn-two">
+                <span class="js-primary-label">download zunify</span>
+                <small class="js-primary-meta">windows · macos · linux</small>
+              </span>
+            </a>
+            <a href="#demo" class="btn btn-line">try it in your browser</a>
           </div>
         </div>
-        <p class="demo-note reveal">The demo uses sample tracks. The desktop app plays your own library from disk.</p>
+
+        <!-- The disc: press play and the whole site becomes the player -->
+        <div class="disc-stage intro i3">
+          <canvas class="spectrum" id="spectrum" aria-hidden="true"></canvas>
+          <button class="disc" id="disc" aria-label="Play the Zunify soundtrack">
+            <span class="disc-art"><img id="disc-art" src="assets/covers/metro_nights.jpg" alt="" width="560" height="560"></span>
+            <span class="disc-grooves" aria-hidden="true"></span>
+            <span class="disc-hub">
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+            </span>
+          </button>
+          <p class="disc-hint"><span class="js-disc-hint">press play</span> <span class="mono">· the site is the player</span></p>
+        </div>
+      </div>
+
+      <div class="hero-foot">
+        <div class="np-chip" aria-live="polite">
+          <span class="mono">now playing</span>
+          <b class="js-np-title">midnight neon</b>
+          <span class="js-np-artist">zune collective</span>
+        </div>
+        <a href="#manifesto" class="scroll-cue" aria-label="Scroll down"><span></span></a>
       </div>
     </section>
 
-    <!-- ============ DOWNLOAD ============ -->
-    <section class="section download" id="download">
-      <div class="download-bloom" aria-hidden="true"></div>
-      <div class="wrap">
-        <header class="section-head center reveal">
-          <p class="kicker">download</p>
-          <h2 class="section-title">get zunify <span class="js-version-text"></span></h2>
-          <p class="section-sub">Free forever. Pick your platform.</p>
-        </header>
-
-        <div class="dl-grid">
-          <article class="dl-card reveal" data-os="windows">
-            <div class="dl-os">
-              <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M0 3.45 9.75 2.1v9.45H0m10.95-9.6L24 0v11.4H10.95M0 12.6h9.75v9.45L0 20.7m10.95-8.1H24V24l-13.05-1.8"/></svg>
-              <div><h3>windows</h3><span>Windows 10 &amp; 11 · 64-bit</span></div>
-            </div>
-            <a class="btn btn-solid btn-block" data-asset="Zunify-Setup-x64.exe" href="https://github.com/breejesh/zunify/releases/latest">installer (.exe)</a>
-            <a class="btn btn-ghost btn-block" data-asset="Zunify-Portable-x64.exe" href="https://github.com/breejesh/zunify/releases/latest">portable (.exe)</a>
-            <p class="dl-tip">SmartScreen warning? Click <em>More info → Run anyway</em>. The app isn't code-signed yet.</p>
-          </article>
-
-          <article class="dl-card reveal" data-os="mac">
-            <div class="dl-os">
-              <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 1.01-2.87-.96.04-2.1.64-2.76 1.41-.57.65-1.07 1.7-1 2.76 1.07.08 2.14-.55 2.75-1.3z"/></svg>
-              <div><h3>macos</h3><span>macOS 11 Big Sur or later</span></div>
-            </div>
-            <a class="btn btn-solid btn-block" data-asset="Zunify-mac-arm64.dmg" href="https://github.com/breejesh/zunify/releases/latest">apple silicon (.dmg)</a>
-            <a class="btn btn-ghost btn-block" data-asset="Zunify-mac-x64.dmg" href="https://github.com/breejesh/zunify/releases/latest">intel (.dmg)</a>
-            <p class="dl-tip">"Damaged" or "unidentified developer"? Run <code>xattr -cr /Applications/Zunify.app</code> once.</p>
-          </article>
-
-          <article class="dl-card reveal" data-os="linux">
-            <div class="dl-os">
-              <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2c-2.2 0-3.5 1.9-3.5 4.4 0 1.5.4 2.5.4 3.6 0 1.4-2.9 4.2-2.9 7.3 0 .9.3 1.6.8 2.1M12 2c2.2 0 3.5 1.9 3.5 4.4 0 1.5-.4 2.5-.4 3.6 0 1.4 2.9 4.2 2.9 7.3 0 .9-.3 1.6-.8 2.1M7 19.5c-1 .5-2.6.4-3 1.3-.3.8 1 1.2 2.8 1.2 1.3 0 2.2-.6 2.9-1.4M17 19.5c1 .5 2.6.4 3 1.3.3.8-1 1.2-2.8 1.2-1.3 0-2.2-.6-2.9-1.4M9.7 20.6c.7.3 1.5.4 2.3.4s1.6-.1 2.3-.4"/><circle cx="10.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><path d="M10.8 8.6 12 9.6l1.2-1"/></svg>
-              <div><h3>linux</h3><span>AppImage · Debian / Ubuntu</span></div>
-            </div>
-            <a class="btn btn-solid btn-block" data-asset="Zunify-linux-x86_64.AppImage" href="https://github.com/breejesh/zunify/releases/latest">appimage (x64)</a>
-            <a class="btn btn-ghost btn-block" data-asset="Zunify-linux-amd64.deb" href="https://github.com/breejesh/zunify/releases/latest">debian / ubuntu (.deb)</a>
-            <p class="dl-tip">AppImage: <code>chmod +x</code> it, then run. Ubuntu 22.04+ needs <code>libfuse2</code>.</p>
-          </article>
-        </div>
-
-        <p class="dl-more reveal">
-          <a href="https://github.com/breejesh/zunify/releases" target="_blank" rel="noopener">all releases &amp; changelog</a>
-          <span aria-hidden="true">·</span>
-          <a href="https://github.com/breejesh/zunify" target="_blank" rel="noopener">source on github</a>
+    <!-- ===================================================================
+         2. MANIFESTO: scroll-lit kinetic type
+         =================================================================== -->
+    <section class="manifesto" id="manifesto" aria-label="Why Zunify">
+      <div class="manifesto-sticky">
+        <p class="mono label">01 · why zunify</p>
+        <p class="manifesto-text" id="manifesto-text">
+          your music deserves better than an algorithm.
+          no accounts. no ads. no streams to rent.
+          just the files you love, played *beautifully*,
+          the way the *zune* did it.
         </p>
       </div>
     </section>
 
-    <!-- ============ SPECS ============ -->
-    <section class="section specs">
-      <div class="wrap specs-grid">
-        <div class="reveal">
-          <p class="kicker">under the hood</p>
-          <h2 class="section-title small">built clean.<br><span class="dim">runs everywhere.</span></h2>
+    <!-- ===================================================================
+         3. PANORAMA: the Zune HD hub, scrolled sideways
+         =================================================================== -->
+    <section class="panorama" id="panorama" aria-label="Tour of the app">
+      <div class="pano-sticky">
+        <div class="pano-title" id="pano-title" aria-hidden="true">zunify · your music</div>
+        <div class="pano-track" id="pano-track">
+          <article class="pano-panel">
+            <header><span class="mono">02 · tour</span><h2>home</h2></header>
+            <figure class="shot"><img src="doc-images/home.png" alt="Zunify Quickplay home screen with new albums, playlists and history" width="1434" height="943" loading="lazy"></figure>
+            <p>Quickplay puts new arrivals, your playlists and recent history one click from playing.</p>
+          </article>
+          <article class="pano-panel">
+            <header><span class="mono">&nbsp;</span><h2>collection</h2></header>
+            <figure class="shot"><img src="doc-images/collection.png" alt="Zunify collection with artist, album and song columns" width="1434" height="941" loading="lazy"></figure>
+            <p>Artists, albums and songs side by side in classic Metro columns. Sort, search, play.</p>
+          </article>
+          <article class="pano-panel">
+            <header><span class="mono">&nbsp;</span><h2>now playing</h2></header>
+            <figure class="shot"><img src="doc-images/now-playing-1.png" alt="Zunify Now Playing with an animated album art mosaic" width="1434" height="942" loading="lazy"></figure>
+            <p>A living mosaic of your own album art. The moment everyone remembers, back on your screen.</p>
+          </article>
+          <article class="pano-panel">
+            <header><span class="mono">&nbsp;</span><h2>accents</h2></header>
+            <figure class="shot"><img src="doc-images/now-playing-2.png" alt="Zunify Now Playing in a different accent colour" width="1431" height="948" loading="lazy"></figure>
+            <p>Six classic Zune accents run through every screen. Pick yours. Try them on this page below.</p>
+          </article>
+          <article class="pano-panel">
+            <header><span class="mono">&nbsp;</span><h2>settings</h2></header>
+            <figure class="shot"><img src="doc-images/settings.png" alt="Zunify settings with music folders, themes and accents" width="1435" height="940" loading="lazy"></figure>
+            <p>Point it at your music folders. Original, dark or light. That's the whole setup.</p>
+          </article>
         </div>
-        <dl class="spec-list reveal">
-          <div><dt>formats</dt><dd>FLAC · WAV · MP3 · M4A · AAC · OGG</dd></div>
-          <div><dt>platforms</dt><dd>Windows 10/11 · macOS 11+ · Linux x64</dd></div>
-          <div><dt>built with</dt><dd>Electron · Angular 19 · Dexie (IndexedDB)</dd></div>
-          <div><dt>metadata</dt><dd>music-metadata: ID3, Vorbis &amp; MP4 tags, cover art</dd></div>
-          <div><dt>network</dt><dd>none. zunify never phones home</dd></div>
-          <div><dt>license</dt><dd>MIT, free &amp; open source</dd></div>
-        </dl>
+        <div class="pano-progress" aria-hidden="true"><span id="pano-bar"></span></div>
       </div>
+    </section>
+
+    <!-- ===================================================================
+         4. LIVE TILES: features as a Metro start screen
+         =================================================================== -->
+    <section class="tiles-section" id="tiles" aria-label="Features">
+      <header class="section-head reveal">
+        <p class="mono label">03 · features</p>
+        <h2 class="display">everything you loved.<br><span class="ghost">nothing you didn't.</span></h2>
+      </header>
+
+      <div class="tiles">
+        <!-- Now playing: peeks between cover art and text like a WP7 live tile -->
+        <article class="tile t-np live-peek reveal" style="--d:0">
+          <div class="peek">
+            <div class="face face-a"><img class="js-tile-cover" src="assets/covers/metro_nights.jpg" alt="" width="560" height="560" loading="lazy"></div>
+            <div class="face face-b">
+              <span class="mono">now playing</span>
+              <h3>a full-screen<br>mosaic of your<br>album art</h3>
+              <p>flipping, shifting, alive. with big type and a visualizer. the zune moment, rebuilt.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile t-formats accent-tile reveal" style="--d:1">
+          <span class="mono">lossless ready</span>
+          <div class="ticker" aria-label="Supported formats: FLAC, WAV, MP3, M4A, AAC, OGG">
+            <div class="ticker-inner"><b>flac</b><b>wav</b><b>mp3</b><b>m4a</b><b>aac</b><b>ogg</b><b>flac</b></div>
+          </div>
+          <p>tags &amp; cover art read straight from your files</p>
+        </article>
+
+        <article class="tile t-private reveal" style="--d:2">
+          <div class="flip">
+            <div class="face face-a"><b class="huge">0</b><span class="mono">accounts</span></div>
+            <div class="face face-b"><b class="huge">0</b><span class="mono">trackers</span></div>
+          </div>
+          <p>your library lives on your machine. zunify never phones home.</p>
+        </article>
+
+        <article class="tile t-eq reveal" style="--d:3">
+          <div class="eq" id="tile-eq" aria-hidden="true"></div>
+          <h3>hear it</h3>
+          <p>press play up top. these bars are listening.</p>
+        </article>
+
+        <article class="tile t-heart reveal" style="--d:4">
+          <svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <h3>hearts &amp; playlists</h3>
+          <p>favourite, drag to reorder, save the queue in one click.</p>
+        </article>
+
+        <article class="tile t-keys reveal" style="--d:5">
+          <div class="keys" aria-hidden="true"><kbd>⏮</kbd><kbd class="wide">⏯</kbd><kbd>⏭</kbd></div>
+          <h3>truly native</h3>
+          <p>media keys, OS controls, frameless window. here too: press <kbd class="inline">space</kbd> to play, <kbd class="inline">←</kbd><kbd class="inline">→</kbd> to skip.</p>
+        </article>
+
+        <article class="tile t-accents reveal" style="--d:6">
+          <h3>make it yours</h3>
+          <p>original, dark or light themes. six classic zune accents. tap one, the whole page follows.</p>
+          <div class="swatches" role="radiogroup" aria-label="Accent colour">
+            <button class="swatch" data-accent="magenta" role="radio" aria-label="Magenta"></button>
+            <button class="swatch" data-accent="orange" role="radio" aria-label="Orange"></button>
+            <button class="swatch" data-accent="cyan" role="radio" aria-label="Cyan"></button>
+            <button class="swatch" data-accent="green" role="radio" aria-label="Green"></button>
+            <button class="swatch" data-accent="red" role="radio" aria-label="Red"></button>
+            <button class="swatch" data-accent="yellow" role="radio" aria-label="Yellow"></button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. DEMO
+         =================================================================== -->
+    <section class="demo" id="demo" aria-label="Live demo">
+      <header class="section-head reveal">
+        <p class="mono label">04 · live demo</p>
+        <h2 class="display">the real thing.<br><span class="ghost">right here.</span></h2>
+        <p class="lede">This is the actual Zunify interface running in your browser with a sample library.
+          Double-click a song. Open Now Playing. Change the accent in settings.</p>
+      </header>
+      <div class="device reveal" id="demo-device">
+        <div class="device-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">zunify · browser demo</span></div>
+        <div class="device-screen">
+          <iframe src="demo/" title="Zunify live demo" loading="lazy" allow="autoplay"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         6. DOWNLOAD
+         =================================================================== -->
+    <section class="download" id="download" aria-label="Download">
+      <div class="dl-bloom" aria-hidden="true"></div>
+      <header class="section-head center reveal">
+        <p class="mono label">05 · download <span class="js-version-text"></span></p>
+        <h2 class="display giant">take it <span class="zune-gradient">home.</span></h2>
+        <p class="lede">Free forever. Open source. Pick your platform.</p>
+      </header>
+
+      <div class="dl-grid">
+        <article class="dl reveal" data-os="windows" style="--d:0">
+          <div class="dl-top">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M0 3.45 9.75 2.1v9.45H0m10.95-9.6L24 0v11.4H10.95M0 12.6h9.75v9.45L0 20.7m10.95-8.1H24V24l-13.05-1.8"/></svg>
+            <span class="dl-badge mono">your system</span>
+          </div>
+          <h3>windows</h3>
+          <p class="dl-sub">Windows 10 &amp; 11 · 64-bit</p>
+          <a class="btn btn-primary btn-block" data-asset="Zunify-Setup-x64.exe" href="https://github.com/breejesh/zunify/releases/latest">installer <small>.exe</small></a>
+          <a class="btn btn-line btn-block" data-asset="Zunify-Portable-x64.exe" href="https://github.com/breejesh/zunify/releases/latest">portable <small>.exe</small></a>
+          <p class="dl-tip">SmartScreen? <em>More info → Run anyway</em>. Not code-signed yet.</p>
+        </article>
+
+        <article class="dl reveal" data-os="mac" style="--d:1">
+          <div class="dl-top">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 1.01-2.87-.96.04-2.1.64-2.76 1.41-.57.65-1.07 1.7-1 2.76 1.07.08 2.14-.55 2.75-1.3z"/></svg>
+            <span class="dl-badge mono">your system</span>
+          </div>
+          <h3>macos</h3>
+          <p class="dl-sub">macOS 11 Big Sur or later</p>
+          <a class="btn btn-primary btn-block" data-asset="Zunify-mac-arm64.dmg" href="https://github.com/breejesh/zunify/releases/latest">apple silicon <small>.dmg</small></a>
+          <a class="btn btn-line btn-block" data-asset="Zunify-mac-x64.dmg" href="https://github.com/breejesh/zunify/releases/latest">intel <small>.dmg</small></a>
+          <p class="dl-tip">"Damaged" warning? Run <code>xattr -cr /Applications/Zunify.app</code> once.</p>
+        </article>
+
+        <article class="dl reveal" data-os="linux" style="--d:2">
+          <div class="dl-top">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2c-2.2 0-3.5 1.9-3.5 4.4 0 1.5.4 2.5.4 3.6 0 1.4-2.9 4.2-2.9 7.3 0 .9.3 1.6.8 2.1M12 2c2.2 0 3.5 1.9 3.5 4.4 0 1.5-.4 2.5-.4 3.6 0 1.4 2.9 4.2 2.9 7.3 0 .9-.3 1.6-.8 2.1M7 19.5c-1 .5-2.6.4-3 1.3-.3.8 1 1.2 2.8 1.2 1.3 0 2.2-.6 2.9-1.4M17 19.5c1 .5 2.6.4 3 1.3.3.8-1 1.2-2.8 1.2-1.3 0-2.2-.6-2.9-1.4M9.7 20.6c.7.3 1.5.4 2.3.4s1.6-.1 2.3-.4"/><circle cx="10.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><path d="M10.8 8.6 12 9.6l1.2-1"/></svg>
+            <span class="dl-badge mono">your system</span>
+          </div>
+          <h3>linux</h3>
+          <p class="dl-sub">AppImage · Debian &amp; Ubuntu</p>
+          <a class="btn btn-primary btn-block" data-asset="Zunify-linux-x86_64.AppImage" href="https://github.com/breejesh/zunify/releases/latest">appimage <small>x64</small></a>
+          <a class="btn btn-line btn-block" data-asset="Zunify-linux-amd64.deb" href="https://github.com/breejesh/zunify/releases/latest">debian / ubuntu <small>.deb</small></a>
+          <p class="dl-tip"><code>chmod +x</code> the AppImage, then run. Ubuntu 22.04+ needs <code>libfuse2</code>.</p>
+        </article>
+      </div>
+
+      <dl class="specs reveal">
+        <div><dt class="mono">formats</dt><dd>FLAC · WAV · MP3 · M4A · AAC · OGG</dd></div>
+        <div><dt class="mono">platforms</dt><dd>Windows 10/11 · macOS 11+ · Linux x64</dd></div>
+        <div><dt class="mono">built with</dt><dd>Electron · Angular · IndexedDB</dd></div>
+        <div><dt class="mono">license</dt><dd>MIT · <a href="https://github.com/breejesh/zunify" target="_blank" rel="noopener">source on github</a></dd></div>
+      </dl>
     </section>
   </main>
 
-  <!-- ============ FOOTER ============ -->
+  <!-- ===================================================================
+       7. FOOTER: the wordmark dances to the music
+       =================================================================== -->
   <footer class="footer">
-    <div class="wrap footer-inner">
-      <a href="#top" class="brand"><span class="brand-mark">z</span><span class="brand-word">zunify</span></a>
-      <p>A love letter to the Zune. Not affiliated with Microsoft.</p>
+    <div class="wordmark" id="wordmark" aria-label="zunify">
+      <span>z</span><span>u</span><span>n</span><span>i</span><span>f</span><span>y</span>
+    </div>
+    <div class="footer-row">
+      <p>A love letter to the Zune. Not affiliated with Microsoft. Demo music is royalty-free.</p>
       <nav>
         <a href="https://github.com/breejesh/zunify" target="_blank" rel="noopener">github</a>
         <a href="https://github.com/breejesh/zunify/releases" target="_blank" rel="noopener">releases</a>
@@ -321,6 +341,27 @@
       </nav>
     </div>
   </footer>
+
+  <!-- ===================================================================
+       PERSISTENT MINI PLAYER (appears once the music starts)
+       =================================================================== -->
+  <div class="miniplayer" id="miniplayer" role="region" aria-label="Site music player">
+    <img class="mp-art js-mp-art" src="assets/covers/metro_nights.jpg" alt="" width="560" height="560">
+    <div class="mp-meta">
+      <b class="js-np-title">midnight neon</b>
+      <span class="js-np-artist">zune collective</span>
+    </div>
+    <div class="mp-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="mp-controls">
+      <button class="mp-btn" id="mp-prev" aria-label="Previous track"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+      <button class="mp-btn mp-play" id="mp-play" aria-label="Play or pause">
+        <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+      </button>
+      <button class="mp-btn" id="mp-next" aria-label="Next track"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    </div>
+    <div class="mp-progress" id="mp-progress" aria-hidden="true"><span id="mp-bar"></span></div>
+  </div>
 
   <script src="app.js"></script>
 </body>
