@@ -1,8 +1,16 @@
-import { Injectable, signal, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable, signal, effect, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackRecord, DbService } from './db.service';
-import { LibraryService } from './library.service';
+import { LibraryService, isDesktopApp } from './library.service';
 import { DEMO_AUDIO_FILES } from './demo-data';
+
+/** Snapshot of the website's player, mirrored by the embedded demo */
+interface SiteState {
+  filePath: string | null;
+  playing: boolean;
+  time: number;
+  duration: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +35,12 @@ export class AudioService {
   private originalQueue: TrackRecord[] = [];
   isBrowser = false;
 
+  // Site link: when the web demo is embedded in the Zunify website, the site owns the one
+  // audio element (it feeds the page's visualizers). This app then mirrors the site's
+  // playback and sends it every transport action, so both always show the same song.
+  private linked = false;
+  private pendingSite: { state: SiteState; queue?: string[] } | null = null;
+
   constructor(
     private libraryService: LibraryService,
     private db: DbService,
@@ -41,13 +55,122 @@ export class AudioService {
       // Set initial volume
       this.audio.volume = this.volume() / 100;
       this.restoreState();
+      this.initSiteLink();
+
+      // Site state can arrive before the demo library has finished loading
+      effect(() => {
+        const tracks = this.libraryService.tracks();
+        if (this.pendingSite && tracks.length > 0) {
+          const { state, queue } = this.pendingSite;
+          this.pendingSite = null;
+          this.applySiteState(state, queue);
+        }
+      });
     }
+  }
+
+  /* ---------------- Site link (web demo embedded in the website) ---------------- */
+
+  private initSiteLink() {
+    if (isDesktopApp() || window.parent === window) return;
+    window.addEventListener('message', e => this.onSiteMessage(e));
+    // Announce ourselves; the site answers with zunify:hello carrying its current state
+    this.postToSite({ type: 'zunify:app-boot' });
+  }
+
+  private postToSite(msg: object) {
+    try {
+      window.parent.postMessage(msg, location.origin);
+    } catch {}
+  }
+
+  private onSiteMessage(e: MessageEvent) {
+    if (e.origin !== location.origin || e.source !== window.parent) return;
+    const d = e.data || {};
+    switch (d.type) {
+      case 'zunify:hello':
+        if (!this.linked) {
+          this.linked = true;
+          this.audio.pause();
+        }
+        this.postToSite({ type: 'zunify:ready' });
+        this.applySiteState(d.state, d.queue);
+        break;
+      case 'zunify:state':
+        this.applySiteState(d.state);
+        break;
+      case 'zunify:command':
+        if (d.action === 'next') this.next();
+        else if (d.action === 'prev') this.prev();
+        else if (d.action === 'ended') this.handleSongEnded();
+        break;
+    }
+  }
+
+  private applySiteState(state: SiteState, queuePaths?: string[]) {
+    if (!state) return;
+    const tracks = this.libraryService.tracks();
+    if (tracks.length === 0) {
+      this.pendingSite = { state, queue: queuePaths ?? this.pendingSite?.queue };
+      return;
+    }
+    const byPath = new Map(tracks.map(t => [t.filePath, t]));
+
+    if (queuePaths && queuePaths.length > 0) {
+      const q = queuePaths.map(p => byPath.get(p)).filter((t): t is TrackRecord => !!t);
+      if (q.length > 0) {
+        this.originalQueue = [...q];
+        this.queue.set(q);
+      }
+    }
+
+    const track = state.filePath ? byPath.get(state.filePath) : undefined;
+    if (track) {
+      // One of the user's own files playing locally yields to the site's soundtrack
+      if (state.playing && !this.audio.paused) this.audio.pause();
+      if (this.currentTrack()?.filePath !== track.filePath) {
+        this.currentTrack.set(track);
+      }
+      let idx = this.queue().findIndex(t => t.filePath === track.filePath);
+      if (idx === -1) {
+        this.queue.set([...this.queue(), track]);
+        this.originalQueue.push(track);
+        idx = this.queue().length - 1;
+      }
+      this.currentIndex.set(idx);
+    }
+
+    // Mirror transport state only while a site-played (demo) track is current
+    if (this.isRemote(this.currentTrack())) {
+      this.isPlaying.set(!!state.playing);
+      this.currentTime.set(state.time || 0);
+      if (state.duration) this.duration.set(state.duration);
+    }
+  }
+
+  /** Demo tracks play through the website when linked; the user's own files play locally */
+  private isRemote(track: TrackRecord | null): boolean {
+    return this.linked && !!track && track.filePath.startsWith('demo:');
+  }
+
+  private siteMeta(track: TrackRecord) {
+    const src = DEMO_AUDIO_FILES[track.filePath] || 'assets/audio/returning_home.mp3';
+    return {
+      filePath: track.filePath,
+      title: track.title,
+      artist: track.artist,
+      album: track.album,
+      albumArtKey: track.albumArtKey,
+      src: new URL(src, document.baseURI).href
+    };
   }
 
   private lastStorageSaveTime = 0;
 
   private initAudioListeners() {
     this.audio.addEventListener('timeupdate', () => {
+      // While linked to the website its player is the source of truth, not this element
+      if (this.isRemote(this.currentTrack())) return;
       const nowTime = this.audio.currentTime;
       this.currentTime.set(nowTime);
       
@@ -59,6 +182,7 @@ export class AudioService {
     });
 
     this.audio.addEventListener('durationchange', () => {
+      if (this.isRemote(this.currentTrack())) return;
       if (!isNaN(this.audio.duration)) {
         this.duration.set(this.audio.duration);
         // Also update track duration in DB if it was 0
@@ -70,16 +194,19 @@ export class AudioService {
     });
 
     this.audio.addEventListener('ended', () => {
+      if (this.isRemote(this.currentTrack())) return;
       localStorage.setItem('zunify-current-time', this.audio.currentTime.toString());
       this.handleSongEnded();
     });
 
     this.audio.addEventListener('play', () => {
+      if (this.isRemote(this.currentTrack())) return;
       this.isPlaying.set(true);
       this.updateMediaSessionPlaybackState('playing');
     });
 
     this.audio.addEventListener('pause', () => {
+      if (this.isRemote(this.currentTrack())) return;
       this.isPlaying.set(false);
       this.updateMediaSessionPlaybackState('paused');
       localStorage.setItem('zunify-current-time', this.audio.currentTime.toString());
@@ -128,6 +255,22 @@ export class AudioService {
 
   // Load file and play
   private async loadAndPlay(track: TrackRecord, resumeAt?: number) {
+    if (this.isRemote(track)) {
+      this.audio.pause();
+      this.currentTrack.set(track);
+      this.currentTime.set(resumeAt || 0);
+      this.postToSite({ type: 'zunify:load', track: this.siteMeta(track), startAt: resumeAt || 0 });
+      if (track.id && !resumeAt) {
+        await this.db.incrementPlayCount(track.id);
+        this.libraryService.updateTrackPlayCount(track.id);
+      }
+      this.persistState();
+      return;
+    }
+    if (this.linked) {
+      // Playing one of the user's own files: silence the site's soundtrack first
+      this.postToSite({ type: 'zunify:transport', action: 'pause' });
+    }
     try {
       this.audio.pause();
       this.currentTrack.set(track);
@@ -180,6 +323,10 @@ export class AudioService {
   play() {
     const track = this.currentTrack();
     if (!track) return;
+    if (this.isRemote(track)) {
+      this.postToSite({ type: 'zunify:transport', action: 'play', track: this.siteMeta(track), startAt: this.currentTime() });
+      return;
+    }
     // A track restored from the previous session may not have its file attached yet
     // (or it failed to load at startup), so load it now and resume where we left off.
     if (!this.audio.src || this.audio.error) {
@@ -190,6 +337,10 @@ export class AudioService {
   }
 
   pause() {
+    if (this.isRemote(this.currentTrack())) {
+      this.postToSite({ type: 'zunify:transport', action: 'pause' });
+      return;
+    }
     this.audio.pause();
   }
 
@@ -227,7 +378,7 @@ export class AudioService {
     if (queue.length === 0) return;
 
     // If song is more than 3 seconds in, restart the song
-    if (this.audio.currentTime > 3) {
+    if (this.currentTime() > 3) {
       this.seek(0);
       return;
     }
@@ -257,14 +408,19 @@ export class AudioService {
   }
 
   seek(seconds: number) {
-    this.audio.currentTime = seconds;
     this.currentTime.set(seconds);
+    if (this.isRemote(this.currentTrack())) {
+      this.postToSite({ type: 'zunify:transport', action: 'seek', time: seconds });
+      return;
+    }
+    this.audio.currentTime = seconds;
   }
 
   setVolume(vol: number) {
     // Vol between 0 and 100
     this.volume.set(vol);
     this.audio.volume = vol / 100;
+    this.syncSiteVolume();
     this.persistState();
   }
 
@@ -272,7 +428,14 @@ export class AudioService {
     const currentMute = this.isMuted();
     this.isMuted.set(!currentMute);
     this.audio.muted = !currentMute;
+    this.syncSiteVolume();
     this.persistState();
+  }
+
+  private syncSiteVolume() {
+    if (this.linked) {
+      this.postToSite({ type: 'zunify:transport', action: 'volume', volume: this.volume() / 100, muted: this.isMuted() });
+    }
   }
 
   toggleShuffle() {

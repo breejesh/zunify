@@ -10,14 +10,37 @@
 const REPO = 'breejesh/zunify';
 const LATEST_DOWNLOAD = `https://github.com/${REPO}/releases/latest/download/`;
 
-// Royalty-free tracks from the demo library (same files the in-browser demo plays)
+// Album art keys used by the demo library → web-sized covers
+const COVER_BY_ALBUM = {
+  'zune collective - metro nights': 'assets/covers/metro_nights.jpg',
+  'velvet drive - analog dreams': 'assets/covers/analog_dreams.jpg',
+  'frédéric chopin - nocturnes & classics': 'assets/covers/chopin_nocturnes.jpg',
+  'frederic chopin - nocturnes & classics': 'assets/covers/chopin_nocturnes.jpg',
+  'claude debussy - impressionist horizons': 'assets/covers/debussy_horizons.jpg',
+  'scott joplin - golden era ragtime': 'assets/covers/ragtime_classics.jpg',
+  'subtle flux - cybernetic pulse': 'assets/covers/cyber_pulse.jpg'
+};
+
+// Normalise a track (from this list, or sent by the embedded demo app) into what the site plays
+const toTrack = t => ({
+  filePath: t.filePath,
+  title: t.title,
+  artist: t.artist,
+  album: t.album,
+  src: t.src,
+  cover: COVER_BY_ALBUM[(t.albumArtKey || '').toLowerCase()] || 'assets/covers/metro_nights.jpg'
+});
+
+// The demo library's own "Metro Essentials" playlist: same IDs, metadata and audio files as the
+// embedded app (player/src/app/services/demo-data.ts), so the hero and the demo stay in sync.
 const TRACKS = [
-  { title: 'Midnight Neon', artist: 'Zune Collective', album: 'Metro Nights', src: 'demo/assets/audio/electronic_pulse.mp3', cover: 'assets/covers/metro_nights.jpg' },
-  { title: 'Memory Lane', artist: 'Velvet Drive', album: 'Analog Dreams', src: 'demo/assets/audio/returning_home.mp3', cover: 'assets/covers/analog_dreams.jpg' },
-  { title: 'Deep Field', artist: 'Subtle Flux', album: 'Cybernetic Pulse', src: 'demo/assets/audio/dreamcore.mp3', cover: 'assets/covers/cyber_pulse.jpg' },
-  { title: 'Dusk in Kyoto', artist: 'Velvet Drive', album: 'Analog Dreams', src: 'demo/assets/audio/nostalgia.mp3', cover: 'assets/covers/analog_dreams.jpg' },
-  { title: 'Walk at 3 AM', artist: 'Zune Collective', album: 'Metro Nights', src: 'demo/assets/audio/walk_3am.mp3', cover: 'assets/covers/metro_nights.jpg' }
-];
+  { filePath: 'demo:track-1', title: 'Midnight Neon', artist: 'Zune Collective', album: 'Metro Nights', albumArtKey: 'zune collective - metro nights', src: 'demo/assets/audio/electronic_pulse.mp3' },
+  { filePath: 'demo:track-6', title: 'Memory Lane', artist: 'Velvet Drive', album: 'Analog Dreams', albumArtKey: 'velvet drive - analog dreams', src: 'demo/assets/audio/returning_home.mp3' },
+  { filePath: 'demo:track-11', title: 'Nocturne in E-flat, Op. 9 No. 2', artist: 'Frédéric Chopin', album: 'Nocturnes & Classics', albumArtKey: 'frédéric chopin - nocturnes & classics', src: 'demo/assets/audio/charlotte_ost.mp3' },
+  { filePath: 'demo:track-15', title: 'Clair de Lune', artist: 'Claude Debussy', album: 'Impressionist Horizons', albumArtKey: 'claude debussy - impressionist horizons', src: 'demo/assets/audio/dreamcore.mp3' },
+  { filePath: 'demo:track-20', title: 'Deep Field Resonance', artist: 'Subtle Flux', album: 'Cybernetic Pulse', albumArtKey: 'subtle flux - cybernetic pulse', src: 'demo/assets/audio/witness_ost.mp3' },
+  { filePath: 'demo:track-23', title: 'The Entertainer', artist: 'Scott Joplin', album: 'Golden Era Ragtime', albumArtKey: 'scott joplin - golden era ragtime', src: 'demo/assets/audio/joyful_donuts.mp3' }
+].map(toTrack);
 
 const COVERS = [
   'assets/covers/metro_nights.jpg',
@@ -60,8 +83,13 @@ const player = {
   analyser: null,
   freq: null,
   index: 0,
+  current: TRACKS[0],
+  loaded: false,
   playing: false,
   started: false,
+  // true once the embedded demo app has answered our hello: it then owns queue decisions
+  linked: false,
+  link: null,
   // smoothed analysis values (0..1)
   bass: 0,
   mid: 0,
@@ -75,7 +103,7 @@ const player = {
   on(evt, fn) { this.listeners[evt].push(fn); },
   emit(evt, arg) { this.listeners[evt].forEach(fn => fn(arg)); },
 
-  get track() { return TRACKS[this.index]; },
+  get track() { return this.current; },
 
   setupGraph() {
     if (this.ctx) return;
@@ -93,16 +121,25 @@ const player = {
 
   load(i) {
     this.index = (i + TRACKS.length) % TRACKS.length;
-    this.audio.src = this.track.src;
-    this.emit('track', this.track);
+    this.loadTrack(TRACKS[this.index]);
+  },
+
+  loadTrack(track, startAt = 0) {
+    this.current = track;
+    const i = TRACKS.findIndex(t => t.filePath === track.filePath);
+    if (i !== -1) this.index = i;
+    this.audio.preload = 'auto';
+    this.audio.src = track.src;
+    this.loaded = true;
+    if (startAt > 0) {
+      this.audio.addEventListener('loadedmetadata', () => { this.audio.currentTime = startAt; }, { once: true });
+    }
+    this.emit('track', track);
   },
 
   async play() {
-    if (!this.started) {
-      this.started = true;
-      this.audio.preload = 'auto';
-      this.load(this.index);
-    }
+    this.started = true;
+    if (!this.loaded) this.loadTrack(this.current);
     this.setupGraph();
     if (this.ctx && this.ctx.state === 'suspended') await this.ctx.resume();
     try {
@@ -114,11 +151,31 @@ const player = {
 
   pause() { this.audio.pause(); },
   toggle() { this.playing ? this.pause() : this.play(); },
-  next() { this.load(this.index + 1); this.play(); },
+  // When linked, the demo app decides what's next (its queue, shuffle and repeat)
+  next() {
+    if (this.linked) { this.link.command('next'); return; }
+    this.load(this.index + 1);
+    this.play();
+  },
   prev() {
+    if (this.linked) { this.link.command('prev'); return; }
     if (this.audio.currentTime > 3) { this.audio.currentTime = 0; return; }
     this.load(this.index - 1);
     this.play();
+  },
+  ended() {
+    if (this.linked) { this.link.command('ended'); return; }
+    this.next();
+  },
+
+  snapshot() {
+    const a = this.audio;
+    return {
+      filePath: this.current ? this.current.filePath : null,
+      playing: this.playing,
+      time: a.currentTime || 0,
+      duration: Number.isFinite(a.duration) ? a.duration : 0
+    };
   },
 
   // Called once per animation frame
@@ -162,7 +219,7 @@ const player = {
 player.audio.preload = 'none';
 player.audio.addEventListener('play', () => { player.playing = true; player.emit('state', true); });
 player.audio.addEventListener('pause', () => { player.playing = false; player.emit('state', false); });
-player.audio.addEventListener('ended', () => player.next());
+player.audio.addEventListener('ended', () => player.ended());
 
 /* ==========================================================================
    BOOT
@@ -184,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTiles();
   initWordmark();
   initReveal();
-  initDemoFocus();
+  initDemoLink();
   startLoop();
 });
 
@@ -486,12 +543,72 @@ function initKeyboard() {
   });
 }
 
-/* Clicking into the live demo pauses the site soundtrack so they don't play over each other */
-function initDemoFocus() {
-  window.addEventListener('blur', () => {
-    setTimeout(() => {
-      if (document.activeElement && document.activeElement.tagName === 'IFRAME' && player.playing) player.pause();
-    }, 0);
+/* ==========================================================================
+   DEMO LINK: the hero and the embedded app are one player
+   The site owns the audio (it feeds the visualizers); the demo app mirrors it and
+   sends every transport action here. Protocol (same-origin postMessage):
+     app → site: zunify:app-boot, zunify:ready, zunify:load {track, startAt},
+                 zunify:transport {action: play|pause|seek|volume, ...}
+     site → app: zunify:hello {state, queue}, zunify:state {state},
+                 zunify:command {action: next|prev|ended}
+   ========================================================================== */
+function initDemoLink() {
+  const iframe = $('#demo-device iframe');
+  if (!iframe) return;
+  const post = msg => {
+    try { iframe.contentWindow?.postMessage(msg, location.origin); } catch {}
+  };
+  const hello = () => post({ type: 'zunify:hello', state: player.snapshot(), queue: TRACKS.map(t => t.filePath) });
+
+  player.link = { command: action => post({ type: 'zunify:command', action }) };
+
+  let lastSent = 0;
+  const sendState = force => {
+    const now = performance.now();
+    if (!force && now - lastSent < 250) return;
+    lastSent = now;
+    post({ type: 'zunify:state', state: player.snapshot() });
+  };
+  ['play', 'pause', 'seeked', 'durationchange', 'loadedmetadata'].forEach(evt =>
+    player.audio.addEventListener(evt, () => sendState(true)));
+  player.audio.addEventListener('timeupdate', () => sendState(false));
+  player.on('track', () => sendState(true));
+
+  iframe.addEventListener('load', hello);
+
+  window.addEventListener('message', e => {
+    if (e.origin !== location.origin || e.source !== iframe.contentWindow) return;
+    const d = e.data || {};
+    switch (d.type) {
+      case 'zunify:app-boot':
+        hello();
+        break;
+      case 'zunify:ready':
+        player.linked = true;
+        break;
+      case 'zunify:load':
+        if (d.track) {
+          player.loadTrack(toTrack(d.track), d.startAt || 0);
+          player.play();
+        }
+        break;
+      case 'zunify:transport':
+        if (d.action === 'play') {
+          if (d.track && d.track.filePath !== player.current.filePath) {
+            player.loadTrack(toTrack(d.track), d.startAt || 0);
+          }
+          player.play();
+        } else if (d.action === 'pause') {
+          player.pause();
+        } else if (d.action === 'seek' && Number.isFinite(d.time)) {
+          if (!player.loaded) player.loadTrack(player.current, d.time);
+          else player.audio.currentTime = d.time;
+        } else if (d.action === 'volume') {
+          player.audio.volume = clamp(Number(d.volume) || 0, 0, 1);
+          player.audio.muted = !!d.muted;
+        }
+        break;
+    }
   });
 }
 
